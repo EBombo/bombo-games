@@ -28,14 +28,13 @@
   },
   "development": {
     "firebase": {
-      "apiKey": "AIzaSyDjlOSf3XgbkrxAHq22SPJsy5CNmz1XcTg",
-      "authDomain": "bombo-games.firebaseapp.com",
-      "databaseURL": "https://bombo-games-default-rtdb.firebaseio.com",
-      "projectId": "bombo-games",
-      "storageBucket": "bombo-games.appspot.com",
-      "messagingSenderId": "1070628660325",
-      "appId": "1:1070628660325:web:da4704997a7bd837d5528c",
-      "measurementId": "G-KWMV30S3TE"
+      "apiKey": "AIzaSyB7PF1ukaiZOEWt-XmJT5ZtYoY-b5cdOhY",
+      "authDomain": "bombo-games-dev.firebaseapp.com",
+      "projectId": "bombo-games-dev",
+      "storageBucket": "bombo-games-dev.appspot.com",
+      "messagingSenderId": "310996445281",
+      "appId": "1:310996445281:web:d9311966a8488369d1e220",
+      "measurementId": "G-QE8D28XL8Z"
     },
     "firebaseEvents": {
       "apiKey": "AIzaSyCWpwb6O8pdYT6v4L4YajKfTLCa9XPOUGs",
