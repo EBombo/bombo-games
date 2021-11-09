@@ -1,15 +1,14 @@
-import React, {setGlobal, useEffect, useGlobal, useState} from "reactn";
-import {collectionToDate, useEnvironment, useLanguageCode, useLocation, useSettings, useUser} from "../hooks";
-import {config, firestore, version} from "../firebase";
+import React, { setGlobal, useEffect, useGlobal, useState } from "reactn";
+import { collectionToDate, useEnvironment, useLanguageCode, useLocation, useSettings, useUser } from "../hooks";
+import { config, firestore, version } from "../firebase";
 import get from "lodash/get";
-import {darkTheme, lightTheme} from "../theme";
+import { darkTheme, lightTheme } from "../theme";
 import moment from "moment";
-import {setLocale} from "yup";
-import {yup} from "../config";
-import {register} from "next-offline/runtime";
-import {spinLoader} from "../components/common/loader";
+import { setLocale } from "yup";
+import { yup } from "../config";
+import { register } from "next-offline/runtime";
+import { spinLoader } from "../components/common/loader";
 import dynamic from "next/dynamic";
-import {ANIMATION, SPEED} from "../business";
 
 const UpdateVersion = dynamic(() => import("../components/versions/UpdateVersion"), {
   loading: () => spinLoader(),
@@ -43,8 +42,6 @@ export const WithConfiguration = (props) => {
         languageCode,
         ping: null,
 
-        animationSpeed: ANIMATION.default,
-        reproductionSpeed: SPEED.default,
         isAutomatic: false,
 
         register: null,

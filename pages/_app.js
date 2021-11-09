@@ -1,16 +1,15 @@
-import React, {useEffect, useGlobal} from "reactn";
+import React, { useEffect, useGlobal } from "reactn";
 import "antd/dist/antd.css";
-import {notification} from "antd";
-import {useUser} from "../src/hooks";
+import { notification } from "antd";
+import { useUser } from "../src/hooks";
 import get from "lodash/get";
-import {darkTheme, GlobalStyle, lightTheme} from "../src/theme";
-import {ThemeProvider} from "styled-components";
-import {ErrorBoundary} from "react-error-boundary";
-import {ErrorFallback} from "../src/components/error-fallback/ErrorFallback";
-import {WithAuthentication} from "../src/session/WithAuthentication";
-import {WithConfiguration} from "../src/session/WithConfiguration";
-import {config, firestoreEvents} from "../src/firebase";
-import {snapshotToArray} from "../src/utils";
+import { darkTheme, GlobalStyle, lightTheme } from "../src/theme";
+import { ThemeProvider } from "styled-components";
+import { ErrorBoundary } from "react-error-boundary";
+import { ErrorFallback } from "../src/components/error-fallback/ErrorFallback";
+import { WithConfiguration } from "../src/session/WithConfiguration";
+import { config, firestoreEvents } from "../src/firebase";
+import { snapshotToArray } from "../src/utils";
 import Head from "next/head";
 
 const MyApp = ({ Component, pageProps }) => {
@@ -33,7 +32,7 @@ const MyApp = ({ Component, pageProps }) => {
     <ThemeProvider theme={get(authUserLS, "theme") === "lightTheme" ? lightTheme : darkTheme}>
       <GlobalStyle />
       <Head>
-        <title>Bingo</title>
+        <title>Ebombo Games</title>
         <meta charSet="UTF-8" />
         <meta name="google" value="notranslate" />
         <meta
@@ -68,9 +67,7 @@ const MyApp = ({ Component, pageProps }) => {
       </Head>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <WithConfiguration>
-          <WithAuthentication>
-            <Component {...pageProps} showNotification={showNotificationAnt} />
-          </WithAuthentication>
+          <Component {...pageProps} showNotification={showNotificationAnt} />
         </WithConfiguration>
       </ErrorBoundary>
     </ThemeProvider>
