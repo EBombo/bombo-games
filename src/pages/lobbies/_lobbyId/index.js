@@ -1,5 +1,4 @@
 import React, { useEffect } from "reactn";
-import styled from "styled-components";
 import { SpinLoaderMin } from "../../../components/common/loader";
 import { useRouter } from "next/router";
 import { firestore } from "../../../firebase";
@@ -27,5 +26,3 @@ export const Lobby = () => {
 
   return <SpinLoaderMin />;
 };
-
-const ContainerCss = styled.div``;
