@@ -22,7 +22,7 @@
     "serverUrlLocal": "http://localhost:8080",
     "serverUrl": "https://api.bombo-games.io",
     "serverUrlEvents": "https://api.ebombo.com",
-    "storageUrl": "https://storage.googleapis.com/bingo-322514.appspot.com",
+    "storageUrl": "https://storage.googleapis.com/bombo-games.appspot.com",
     "analytics": "",
     "maxAgeCache": 86400
   },
@@ -48,7 +48,7 @@
     "serverUrlLocal": "http://localhost:3001/api",
     "serverUrl": "https://red-api.ebombo.io",
     "serverUrlEvents": "https://red-api.ebombo.com",
-    "storageUrl": "https://storage.googleapis.com/bingo-dev-322514.appspot.com",
+    "storageUrl": "https://storage.googleapis.com/bombo-games-dev.appspot.com",
     "analytics": "",
     "maxAgeCache": 86400
   }
