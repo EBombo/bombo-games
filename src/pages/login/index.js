@@ -18,7 +18,6 @@ const Login = (props) => {
 
   const fetchLobby = async (pin) => {
     try {
-      // TODO: All lobbies will be clone to bombo-games.
       const lobbyRef = await firestore.collection("lobbies").where("pin", "==", pin.toString()).limit(1).get();
 
       if (lobbyRef.empty) throw Error("No encontramos tu sala, intenta nuevamente");
