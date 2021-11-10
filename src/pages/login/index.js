@@ -1,12 +1,12 @@
-import React, {useEffect, useGlobal, useMemo, useState} from "reactn";
-import {config, firestore} from "../../firebase";
-import {NicknameStep} from "./NicknameStep";
-import {snapshotToArray} from "../../utils";
-import {EmailStep} from "./EmailStep";
+import React, { useEffect, useGlobal, useMemo, useState } from "reactn";
+import { config, firestore } from "../../firebase";
+import { NicknameStep } from "./NicknameStep";
+import { snapshotToArray } from "../../utils";
+import { EmailStep } from "./EmailStep";
 import styled from "styled-components";
-import {useRouter} from "next/router";
-import {useUser} from "../../hooks";
-import {PinStep} from "./PinStep";
+import { useRouter } from "next/router";
+import { useUser } from "../../hooks";
+import { PinStep } from "./PinStep";
 
 const Login = (props) => {
   const router = useRouter();
@@ -18,6 +18,7 @@ const Login = (props) => {
 
   const fetchLobby = async (pin) => {
     try {
+      // TODO: All lobbies will be clone to bombo-games.
       const lobbyRef = await firestore.collection("lobbies").where("pin", "==", pin.toString()).limit(1).get();
 
       if (lobbyRef.empty) throw Error("No encontramos tu sala, intenta nuevamente");
@@ -54,6 +55,7 @@ const Login = (props) => {
     if (!authUser?.nickname) return;
     if (authUser?.lobby?.settings?.userIdentity && !authUser?.email) return;
 
+    // TODO: Redirect to bingo or hanged.
     router.push(`/lobbies/${authUser.lobby.id}`);
   }, [authUser]);
 
