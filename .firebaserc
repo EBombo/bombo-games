@@ -1,6 +1,6 @@
 {
   "projects": {
     "default": "bombo-games",
-    "dev": "bombo-games"
+    "dev": "bombo-games-dev"
   }
 }
