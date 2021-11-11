@@ -16,4 +16,14 @@ module.exports = withBundleAnalyzer({
 
     return config;
   },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/bingo/:path*",
+          destination: "https://bingo-red.ebombo.io/:path*",
+        },
+      ],
+    };
+  },
 });
