@@ -24,7 +24,6 @@ images:
   - "gcr.io/bombo-games/bombo-games-red"
 options:
   logging: CLOUD_LOGGING_ONLY
-
   # TODO: Solicitar confirmacion de build y deploy de una nueva version.
   # TODO: Enviar correo donde se informa la actualizacion.
   # TODO: Notificar que el envio fallo.
