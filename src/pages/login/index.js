@@ -54,8 +54,10 @@ const Login = (props) => {
     if (!authUser?.nickname) return;
     if (authUser?.lobby?.settings?.userIdentity && !authUser?.email) return;
 
-    // TODO: Redirect to bingo or hanged.
-    router.push(`/lobbies/${authUser.lobby.id}`);
+    // Redirect to bingo || lobby.
+    const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
+
+    router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
   }, [authUser]);
 
   // Auto login.
