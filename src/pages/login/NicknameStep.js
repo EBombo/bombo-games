@@ -1,12 +1,12 @@
-import React, {useEffect, useGlobal, useState} from "reactn";
-import {ButtonBingo, InputBingo} from "../../components/form";
-import {Image} from "../../components/common/Image";
-import {useForm} from "react-hook-form";
-import {config, database} from "../../firebase";
+import React, { useEffect, useGlobal, useState } from "reactn";
+import { ButtonBingo, InputBingo } from "../../components/form";
+import { Image } from "../../components/common/Image";
+import { useForm } from "react-hook-form";
+import { config, database } from "../../firebase";
 import styled from "styled-components";
-import {object, string} from "yup";
-import {useSendError, useUser} from "../../hooks";
-import {ValidateNickname} from "./ValidateNickname";
+import { object, string } from "yup";
+import { useSendError, useUser } from "../../hooks";
+import { ValidateNickname } from "./ValidateNickname";
 
 export const NicknameStep = (props) => {
   const { sendError } = useSendError();
@@ -48,10 +48,13 @@ export const NicknameStep = (props) => {
     try {
       props.setIsLoading(true);
 
+      // TODO: It need refactoring to validate nickname.
+      /*
       if (users.some((user) => user.nickname === data.nickname)) {
         setIsValidating(false);
         throw Error("ERROR", "El nickname ya se encuentra registrado");
       }
+       */
 
       await setAuthUser({ ...authUser, nickname: data.nickname });
       setAuthUserLs({ ...authUser, nickname: data.nickname });
