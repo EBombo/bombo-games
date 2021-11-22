@@ -20,7 +20,7 @@
       "measurementId": "G-BWH1540T4Q"
     },
     "serverUrlLocal": "http://localhost:8080",
-    "serverUrl": "https://api.bombo-games.io",
+    "serverUrl": "https://ebombo.io/api",
     "serverUrlEvents": "https://api.ebombo.com",
     "storageUrl": "https://storage.googleapis.com/bombo-games.appspot.com",
     "analytics": "",
@@ -46,7 +46,7 @@
       "measurementId": "G-NWBPEND5Q0"
     },
     "serverUrlLocal": "http://localhost:3001/api",
-    "serverUrl": "https://red-api.ebombo.io",
+    "serverUrl": "https://red.ebombo.io/api",
     "serverUrlEvents": "https://red-api.ebombo.com",
     "storageUrl": "https://storage.googleapis.com/bombo-games-dev.appspot.com",
     "analytics": "",
