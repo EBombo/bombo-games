@@ -1,6 +1,4 @@
 import React, { useGlobal, useState } from "reactn";
-import { useUser } from "../../hooks";
-import styled from "styled-components";
 import { config } from "../../firebase";
 import { Image } from "../../components/common/Image";
 import { ButtonBingo, InputBingo } from "../../components/form";
@@ -11,37 +9,28 @@ import { avatars } from "../../components/common/DataList";
 import { darkTheme } from "../../theme";
 
 export const PinStep = (props) => {
-  const [, setAuthUserLs] = useUser();
-
-  const [authUser, setAuthUser] = useGlobal("user");
+  const [authUser] = useGlobal("user");
 
   const [avatarIdx, setAvatarIdx] = useState(0);
 
   const validationSchema = object().shape({
-    pin: string().required().min(6)
+    pin: string().required().min(6),
   });
 
   const { register, errors, handleSubmit } = useForm({
     validationSchema,
-    reValidateMode: "onSubmit"
+    reValidateMode: "onSubmit",
   });
 
   const validatePin = async (data) => {
     props.setIsLoading(true);
 
-    await props.fetchLobby(data.pin);
-
-    await setAuthUser({ ...authUser, isAdmin: false, avatar: avatars[avatarIdx] });
-    setAuthUserLs({ ...authUser, isAdmin: false, avatar: avatars[avatarIdx] });
+    await props.fetchLobby(data.pin, avatars[avatarIdx]);
   };
 
   return (
     <form onSubmit={handleSubmit(validatePin)}>
-      <Image
-        src={`${config.storageUrl}/resources/white-icon-ebombo.png`}
-        width="180px"
-        margin="3rem auto 2rem auto"
-      />
+      <Image src={`${config.storageUrl}/resources/white-icon-ebombo.png`} width="180px" margin="3rem auto 2rem auto" />
       <Carousel
         showArrows
         hideDots
@@ -82,4 +71,3 @@ export const PinStep = (props) => {
     </form>
   );
 };
-
