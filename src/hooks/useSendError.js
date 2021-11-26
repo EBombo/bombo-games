@@ -1,13 +1,15 @@
-import {useGlobal} from "reactn";
+import { useGlobal } from "reactn";
 import get from "lodash/get";
-import {config, hostName} from "../firebase";
-import {useRouter} from "next/router";
-import {useFetch} from "./useFetch";
+import { config, hostName } from "../firebase";
+import { useRouter } from "next/router";
+import { useFetch } from "./useFetch";
 
 export const useSendError = () => {
   const { Fetch } = useFetch();
-  const [authUser] = useGlobal("user");
+
   const { pathname } = useRouter();
+
+  const [authUser] = useGlobal("user");
 
   const sendError = async (error = {}, action) => {
     try {
@@ -18,6 +20,8 @@ export const useSendError = () => {
       error.path = pathname;
       error.url = `${hostName}${pathname}`;
       error.userId = get(authUser, "id", null);
+
+      if (process.env.NODE_ENV === "development") console.log(action, error);
 
       const response = await Fetch(`${config.serverUrl}/error-boundary`, "POST", error);
 
