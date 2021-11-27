@@ -20,11 +20,11 @@ module.exports = withBundleAnalyzer({
     return [
       {
         source: "/bingo/:path*",
-        destination: "https://bingo-gold.ebombo.io/bingo/:path*",
+        destination: "https://bingo.ebombo.io/bingo/:path*",
       },
       {
         source: "/hanged/:path*",
-        destination: "https://hanged-gold.ebombo.io/hanged/:path*",
+        destination: "https://hanged.ebombo.io/hanged/:path*",
       },
     ];
   },
