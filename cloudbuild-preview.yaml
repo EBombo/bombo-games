@@ -42,6 +42,7 @@ steps:
 
   - id: "link revision on pull request"
     name: "gcr.io/${PROJECT_ID}/deployment-previews:latest"
+    secretEnv: ["GITHUB_TOKEN"]
     args:
       [
           "set",
