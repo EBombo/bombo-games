@@ -29,6 +29,21 @@ steps:
           "managed",
           "--allow-unauthenticated",
       ]
+  # Force the new revision to serve 100% of traffic.
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      [
+          "run",
+          "services",
+          "update-traffic",
+          "${PROJECT_ID}-red",
+          "--to-latest",
+          "--platform",
+          "managed",
+          "--region",
+          "us-central1",
+      ]
     # TODO: Create access to the Google Cloud Storage object to xxxx-compute@developer.gserviceaccount.com.
     #- name: "gcr.io/cloud-builders/gsutil"
     #args: ["-m" , "cp" , "-r" , "-n" ,"gs://${PROJECT_ID}-dev.appspot.com/*", "gs://${PROJECT_ID}.appspot.com"]
