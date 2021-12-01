@@ -69,7 +69,7 @@ const MyApp = ({ Component, pageProps }) => {
       <Script
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
-          __html: ``,
+          __html: ` `,
         }}
       />
       <ErrorBoundary FallbackComponent={ErrorFallback}>
