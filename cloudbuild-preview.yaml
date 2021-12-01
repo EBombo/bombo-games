@@ -50,7 +50,7 @@ steps:
           "--region",
           "us-central1",
           "--service",
-          "${_SERVICE_NAME}",
+          "${PROJECT_ID}-red",
           "--pull-request",
           "${_PR_NUMBER}",
           "--repo-name",
