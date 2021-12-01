@@ -41,7 +41,7 @@ steps:
       ]
 
   - id: "link revision on pull request"
-    name: "gcr.io/${PROJECT_ID}/deployment-previews:latest" # our custom builder
+    name: "gcr.io/${PROJECT_ID}/deployment-previews:latest"
     args:
       [
           "set",
