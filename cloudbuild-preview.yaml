@@ -55,7 +55,8 @@ steps:
           "--commit-sha",
           "${SHORT_SHA}",
       ]
-
+options:
+  logging: CLOUD_LOGGING_ONLY
 substitutions:
   _SERVICE_NAME: previews
   _GITHUB_REPO: $(pull_request.pull_request.head.repo.full_name)
