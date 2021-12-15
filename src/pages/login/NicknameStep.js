@@ -89,6 +89,7 @@ export const NicknameStep = (props) => {
           defaultValue={authUser?.nickname ?? null}
           disabled={props.isLoading}
           placeholder="Apodo"
+          autoComplete="off"
         />
 
         <ButtonBingo width="100%" disabled={props.isLoading} loading={props.isLoading} htmlType="submit">
