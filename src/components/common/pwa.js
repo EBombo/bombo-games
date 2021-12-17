@@ -1,7 +1,7 @@
-import React, {useState} from "reactn";
+import React, { useState } from "reactn";
 import styled from "styled-components";
-import {mediaQuery} from "../../constants";
-import {AppstoreAddOutlined, LoadingOutlined} from "@ant-design/icons";
+import { mediaQuery } from "../../constants";
+import { AppstoreAddOutlined, LoadingOutlined } from "@ant-design/icons";
 import usePWA from "react-pwa-install-prompt";
 
 const PWA = () => {

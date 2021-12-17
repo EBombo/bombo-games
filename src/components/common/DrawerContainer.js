@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import {Drawer} from "antd";
-import {fontWeightFont} from "../../constants";
+import { Drawer } from "antd";
+import { fontWeightFont } from "../../constants";
 
 export const DrawerContainer = styled(Drawer)`
   .ant-drawer-mask {

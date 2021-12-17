@@ -1,6 +1,6 @@
-import React, {forwardRef} from "reactn";
+import React, { forwardRef } from "reactn";
 import styled from "styled-components";
-import {darkTheme} from "../../theme";
+import { darkTheme } from "../../theme";
 
 export const InputBingo = forwardRef((props, ref) => {
   const theme = darkTheme.inputPrimary;

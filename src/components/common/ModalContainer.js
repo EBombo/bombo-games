@@ -1,7 +1,7 @@
 import React from "reactn";
 import styled from "styled-components";
-import {Modal} from "antd";
-import {mediaQuery} from "../../constants";
+import { Modal } from "antd";
+import { mediaQuery } from "../../constants";
 
 export const ModalContainer = (props) => (
   <ModalContainerCss {...props} maskStyle={{ transition: "none" }}>

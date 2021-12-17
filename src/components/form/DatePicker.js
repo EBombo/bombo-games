@@ -1,7 +1,7 @@
-import React, {forwardRef, Fragment} from "react";
+import React, { forwardRef, Fragment } from "react";
 import styled from "styled-components";
-import {sizes} from "../../constants";
-import {DatePicker as AntDatePicker} from "antd";
+import { sizes } from "../../constants";
+import { DatePicker as AntDatePicker } from "antd";
 
 export const DatePicker = forwardRef((props, ref) => {
   return (

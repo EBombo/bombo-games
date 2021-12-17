@@ -1,10 +1,10 @@
-import React, {useGlobal} from "reactn";
+import React, { useGlobal } from "reactn";
 import styled from "styled-components";
-import {mediaQuery} from "../constants";
-import {useRouter} from "next/router";
-import {BarChartOutlined, HomeOutlined, PoweroffOutlined, UserOutlined} from "@ant-design/icons";
-import {useAcl} from "../hooks";
-import {useAuth} from "../hooks/useAuth";
+import { mediaQuery } from "../constants";
+import { useRouter } from "next/router";
+import { BarChartOutlined, HomeOutlined, PoweroffOutlined, UserOutlined } from "@ant-design/icons";
+import { useAcl } from "../hooks";
+import { useAuth } from "../hooks/useAuth";
 
 const FooterBar = (props) => {
   const { signOut } = useAuth();

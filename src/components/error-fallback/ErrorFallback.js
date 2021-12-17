@@ -1,6 +1,6 @@
-import React, {useEffect} from "reactn";
-import {useSendError} from "../../hooks";
-import {ButtonAnt} from "../form";
+import React, { useEffect } from "reactn";
+import { useSendError } from "../../hooks";
+import { ButtonAnt } from "../form";
 
 export const ErrorFallback = (props) => {
   const { sendError } = useSendError();
