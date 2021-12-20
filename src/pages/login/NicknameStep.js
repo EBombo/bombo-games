@@ -2,13 +2,13 @@ import React, { useEffect, useGlobal, useState } from "reactn";
 import { ButtonBingo, InputBingo } from "../../components/form";
 import { Image } from "../../components/common/Image";
 import { useForm } from "react-hook-form";
-import { config, database } from "../../firebase";
+import { config, database, firebase, firestoreBingo, firestoreEvents } from "../../firebase";
 import styled from "styled-components";
 import { object, string } from "yup";
 import { useSendError, useUser } from "../../hooks";
 import { ValidateNickname } from "./ValidateNickname";
 import { snapshotToArray } from "../../utils";
-import { firebase, firestoreEvents } from "../../firebase/config";
+import { getBingoCard } from "../../constants/bingoCards";
 
 export const NicknameStep = (props) => {
   const { sendError } = useSendError();
@@ -46,19 +46,45 @@ export const NicknameStep = (props) => {
 
   const validateNickname = async (data) => {
     setIsValidating(true);
+    props.setIsLoading(true);
 
     try {
-      props.setIsLoading(true);
-
-      if (Object.values(authUser.lobby.users).some((user) => user.nickname === data.nickname)) {
-        setIsValidating(false);
-        throw Error("ERROR", "El nickname ya se encuentra registrado");
-      }
-
       const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
 
-      await setAuthUser({ ...authUser, nickname: data.nickname });
-      setAuthUserLs({ ...authUser, nickname: data.nickname });
+      const newUser = {
+        id: authUser?.id ?? null,
+        email: authUser?.email ?? null,
+        userId: authUser?.id ?? null,
+        nickname: data.nickname,
+        avatar: authUser?.avatar ?? null,
+        lobbyId: authUser.lobby.id,
+        lobby: authUser.lobby,
+      };
+
+      if (gameName === "bingo") {
+        const lobbyRef = await firestoreBingo.doc(`lobbies/${newUser.lobbyId}`).get();
+        const lobby = lobbyRef.data();
+
+        if (lobby?.isPlaying) {
+          newUser.card = JSON.stringify(getBingoCard());
+
+          await firestoreBingo.doc(`games/${lobby.game.id}`).update({
+            countPlayers: firebase.firestore.FieldValue.increment(1),
+          });
+
+          await firestoreBingo
+            .collection("lobbies")
+            .doc(lobby.id)
+            .update({
+              users: { ...lobby.users, [authUser.id]: newUser },
+            });
+
+          await saveMembers(lobby, [newUser]);
+        }
+      }
+
+      await setAuthUser(newUser);
+      setAuthUserLs(newUser);
     } catch (error) {
       props.showNotification("Error", error.message);
 
@@ -72,7 +98,7 @@ export const NicknameStep = (props) => {
     setIsValidating(false);
   };
 
-  export const saveMembers = async (lobby, users) => {
+  const saveMembers = async (lobby, users) => {
     if (!lobby.companyId) return;
 
     const promises = Object.values(users).map(async (user) => {
