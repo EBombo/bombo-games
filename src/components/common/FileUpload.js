@@ -28,7 +28,7 @@ export const FileUpload = (props) => {
 
     //const sizeFile=event.target.files[0].size;
     //if(sizeFile>=props.limitMb)return notfication;
-    console.log("event.target.files", event.target.files);
+    // console.log("event.target.files", event.target.files);
 
     const file = event.target.files[0];
     const fileSuffix = file.name.split(".")[1];
