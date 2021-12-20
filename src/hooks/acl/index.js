@@ -1,8 +1,8 @@
-import React, {useGlobal} from "reactn";
-import {Acl} from "./Acl";
-import {AclLink} from "./AclLink";
-import {aclMenus} from "./aclMenus";
-import {aclRoutes} from "./aclRoutes";
+import React, { useGlobal } from "reactn";
+import { Acl } from "./Acl";
+import { AclLink } from "./AclLink";
+import { aclMenus } from "./aclMenus";
+import { aclRoutes } from "./aclRoutes";
 import get from "lodash/get";
 import flatMap from "lodash/flatMap";
 

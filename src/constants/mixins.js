@@ -1,5 +1,5 @@
-import {colorBlack, colorPrimary, colorRed, colorWhite} from "./colors";
-import {mediaQuery} from "./mediaQuery";
+import { colorBlack, colorPrimary, colorRed, colorWhite } from "./colors";
+import { mediaQuery } from "./mediaQuery";
 
 export const rgbaPrimary = (opacity) => {
   return `background: rgba(105, 232, 160, ${opacity});`;

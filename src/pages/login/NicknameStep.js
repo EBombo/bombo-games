@@ -2,11 +2,13 @@ import React, { useEffect, useGlobal, useState } from "reactn";
 import { ButtonBingo, InputBingo } from "../../components/form";
 import { Image } from "../../components/common/Image";
 import { useForm } from "react-hook-form";
-import { config, database } from "../../firebase";
+import { config, database, firebase, firestoreBingo, firestoreEvents } from "../../firebase";
 import styled from "styled-components";
 import { object, string } from "yup";
 import { useSendError, useUser } from "../../hooks";
 import { ValidateNickname } from "./ValidateNickname";
+import { snapshotToArray } from "../../utils";
+import { getBingoCard } from "../../constants/bingoCards";
 
 export const NicknameStep = (props) => {
   const { sendError } = useSendError();
@@ -44,20 +46,45 @@ export const NicknameStep = (props) => {
 
   const validateNickname = async (data) => {
     setIsValidating(true);
+    props.setIsLoading(true);
 
     try {
-      props.setIsLoading(true);
+      const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
 
-      // TODO: It need refactoring to validate nickname.
-      /*
-      if (users.some((user) => user.nickname === data.nickname)) {
-        setIsValidating(false);
-        throw Error("ERROR", "El nickname ya se encuentra registrado");
+      const newUser = {
+        id: authUser?.id ?? null,
+        email: authUser?.email ?? null,
+        userId: authUser?.id ?? null,
+        nickname: data.nickname,
+        avatar: authUser?.avatar ?? null,
+        lobbyId: authUser.lobby.id,
+        lobby: authUser.lobby,
+      };
+
+      if (gameName === "bingo") {
+        const lobbyRef = await firestoreBingo.doc(`lobbies/${newUser.lobbyId}`).get();
+        const lobby = lobbyRef.data();
+
+        if (lobby?.isPlaying) {
+          newUser.card = JSON.stringify(getBingoCard());
+
+          await firestoreBingo.doc(`games/${lobby.game.id}`).update({
+            countPlayers: firebase.firestore.FieldValue.increment(1),
+          });
+
+          await firestoreBingo
+            .collection("lobbies")
+            .doc(lobby.id)
+            .update({
+              users: { ...lobby.users, [authUser.id]: newUser },
+            });
+
+          await saveMembers(lobby, [newUser]);
+        }
       }
-       */
 
-      await setAuthUser({ ...authUser, nickname: data.nickname });
-      setAuthUserLs({ ...authUser, nickname: data.nickname });
+      await setAuthUser(newUser);
+      setAuthUserLs(newUser);
     } catch (error) {
       props.showNotification("Error", error.message);
 
@@ -69,6 +96,49 @@ export const NicknameStep = (props) => {
 
     props.setIsLoading(false);
     setIsValidating(false);
+  };
+
+  const saveMembers = async (lobby, users) => {
+    if (!lobby.companyId) return;
+
+    const promises = Object.values(users).map(async (user) => {
+      const { nickname, email } = user;
+
+      const membersRef = firestoreEvents.collection("companies").doc(lobby.companyId).collection("members");
+
+      // Fetch users to verify.
+      const usersQuery = await membersRef
+        .where("searchName", "array-contains-any", [nickname?.toUpperCase(), email?.toUpperCase()])
+        .get();
+      const currentUsers = snapshotToArray(usersQuery);
+      const currentUser = currentUsers[0];
+
+      // Default properties.
+      let newUser = {};
+      const memberId = currentUser?.id ?? membersRef.doc().id;
+
+      // Create member with format.
+      if (!currentUser)
+        newUser = {
+          nickname: user.nickname ?? null,
+          email: user.email ?? null,
+          id: memberId,
+          createAt: new Date(),
+          updateAt: new Date(),
+          deleted: false,
+          status: "Active",
+          role: "member",
+          ads: [],
+          searchName: [nickname?.toUpperCase(), email?.toUpperCase()],
+        };
+
+      // Update members.
+      membersRef
+        .doc(memberId)
+        .set({ ...newUser, countPlays: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+    });
+
+    await Promise.all(promises);
   };
 
   return (

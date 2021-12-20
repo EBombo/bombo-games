@@ -1,8 +1,8 @@
 import React from "reactn";
 import styled from "styled-components";
-import {mediaQuery} from "../../constants";
-import {config} from "../../firebase";
-import {Image} from "../../components/common/Image";
+import { mediaQuery } from "../../constants";
+import { config } from "../../firebase";
+import { Image } from "../../components/common/Image";
 
 export const ValidateNickname = (props) => (
   <ValidatingContainer>

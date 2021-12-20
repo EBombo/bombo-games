@@ -40,6 +40,11 @@ let firestoreEvents;
 let storageEvents;
 let authEvents;
 
+let analyticsBingo;
+let firestoreBingo;
+let storageBingo;
+let authBingo;
+
 if (isEmpty(firebase.apps)) {
   try {
     console.log("initializeApp", isEmpty(firebase.apps));
@@ -71,6 +76,21 @@ if (isEmpty(firebase.apps)) {
   } catch (error) {
     console.error("error initializeApp", error);
   }
+  //Allow connection with bingo firebase
+  try {
+    firebase.initializeApp(config.firebaseBingo, "bingo");
+    firestoreBingo = firebase.app("bingo").firestore();
+    storageBingo = firebase.app("bingo").storage();
+    authBingo = firebase.app("bingo").auth();
+
+    if (typeof window !== "undefined") {
+      analyticsBingo = firebase.app("bingo").analytics();
+    }
+
+    firestoreBingo.settings({ ignoreUndefinedProperties: true });
+  } catch (error) {
+    console.error("error initializeApp", error);
+  }
 }
 
 if (DOMAIN?.includes("localhost")) {
@@ -80,6 +100,10 @@ if (DOMAIN?.includes("localhost")) {
 }
 
 export {
+  analyticsBingo,
+  firestoreBingo,
+  storageBingo,
+  authBingo,
   analyticsEvents,
   firestoreEvents,
   storageEvents,

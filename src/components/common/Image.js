@@ -1,6 +1,6 @@
 import React from "reactn";
 import styled from "styled-components";
-import {mediaQuery} from "../../constants";
+import { mediaQuery } from "../../constants";
 
 export const Image = (props) => (
   <ImageCss {...props}>

@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import {Select as AntSelect} from "antd";
+import { Select as AntSelect } from "antd";
 import React from "react";
-import {sizes} from "../../constants";
+import { sizes } from "../../constants";
 
 export const Select = ({ variant = "default", optionsdom, ...props }) => (
   <SelectContainer variant={variant}>

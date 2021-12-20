@@ -1,4 +1,4 @@
-import React, {forwardRef} from "reactn";
+import React, { forwardRef } from "reactn";
 import styled from "styled-components";
 import Button from "antd/lib/button";
 

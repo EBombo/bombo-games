@@ -1,6 +1,6 @@
-import React, {forwardRef} from "react";
+import React, { forwardRef } from "react";
 import styled from "styled-components";
-import {sizes} from "../../constants";
+import { sizes } from "../../constants";
 
 export const TextArea = forwardRef((props, ref) => (
   <InputContainer marginBottom={props.marginBottom}>

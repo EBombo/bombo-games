@@ -1,6 +1,6 @@
 import React from "react";
 import Responsive from "react-responsive";
-import {breakPoints} from "./breakPoints";
+import { breakPoints } from "./breakPoints";
 
 const Desktop = (props) => <Responsive {...props} minWidth={breakPoints.tablet} />;
 

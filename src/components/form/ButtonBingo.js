@@ -1,6 +1,6 @@
-import {LoadingOutlined} from "@ant-design/icons";
-import React, {forwardRef} from "reactn";
-import {darkTheme} from "../../theme";
+import { LoadingOutlined } from "@ant-design/icons";
+import React, { forwardRef } from "reactn";
+import { darkTheme } from "../../theme";
 import styled from "styled-components";
 
 export const ButtonBingo = forwardRef((props, ref) => {
