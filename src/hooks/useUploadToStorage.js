@@ -1,4 +1,4 @@
-import {storage as storageDefault} from "../firebase";
+import { storage as storageDefault } from "../firebase";
 import get from "lodash/get";
 
 const buckets = {

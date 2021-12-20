@@ -1,8 +1,8 @@
-import {ButtonAnt} from "../form";
-import {ModalContainer} from "../common/ModalContainer";
+import { ButtonAnt } from "../form";
+import { ModalContainer } from "../common/ModalContainer";
 import React from "reactn";
 import styled from "styled-components";
-import {mediaQuery} from "../../constants";
+import { mediaQuery } from "../../constants";
 
 export const ModalConfirm = (props) => (
   <ModalContainer

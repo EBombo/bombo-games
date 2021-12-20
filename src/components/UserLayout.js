@@ -1,18 +1,18 @@
-import React, {useGlobal} from "reactn";
+import React, { useGlobal } from "reactn";
 import styled from "styled-components";
-import {Layout} from "./index";
-import {Tooltip} from "antd";
-import {MenuOutlined} from "@ant-design/icons";
-import {config} from "../firebase";
-import {mediaQuery, sizes} from "../constants";
-import {ModalContainer} from "./common/ModalContainer";
-import {useAcl} from "../hooks";
-import {RightDrawer} from "./right-drawer/RightDrawer";
-import {Anchor} from "./form";
-import {useRouter} from "next/router";
+import { Layout } from "./index";
+import { Tooltip } from "antd";
+import { MenuOutlined } from "@ant-design/icons";
+import { config } from "../firebase";
+import { mediaQuery, sizes } from "../constants";
+import { ModalContainer } from "./common/ModalContainer";
+import { useAcl } from "../hooks";
+import { RightDrawer } from "./right-drawer/RightDrawer";
+import { Anchor } from "./form";
+import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
-import {spinLoaderMin} from "./common/loader";
-import {useAuth} from "../hooks/useAuth";
+import { spinLoaderMin } from "./common/loader";
+import { useAuth } from "../hooks/useAuth";
 
 const PWA = dynamic(() => import("./common/pwa"), { ssr: false });
 

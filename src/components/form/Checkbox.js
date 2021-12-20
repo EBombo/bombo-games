@@ -1,7 +1,7 @@
-import React, {forwardRef, Fragment} from "react";
+import React, { forwardRef, Fragment } from "react";
 import styled from "styled-components";
-import {sizes} from "../../constants";
-import {Checkbox as AntCheckbox} from "antd";
+import { sizes } from "../../constants";
+import { Checkbox as AntCheckbox } from "antd";
 
 export const Checkbox = forwardRef((props, ref) => (
   <Fragment>

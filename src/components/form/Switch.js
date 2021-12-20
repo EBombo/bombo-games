@@ -1,7 +1,7 @@
-import React, {forwardRef, Fragment} from "react";
+import React, { forwardRef, Fragment } from "react";
 import styled from "styled-components";
-import {sizes} from "../../constants";
-import {Switch as AntSwitch} from "antd";
+import { sizes } from "../../constants";
+import { Switch as AntSwitch } from "antd";
 
 export const Switch = forwardRef((props, ref) => (
   <Fragment>

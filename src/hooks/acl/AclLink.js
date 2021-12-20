@@ -1,6 +1,6 @@
 import React from "reactn";
 import styled from "styled-components";
-import {useHistory} from "react-router";
+import { useHistory } from "react-router";
 
 export const AclLink = (props) => {
   const history = useHistory();

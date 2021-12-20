@@ -1,10 +1,10 @@
-import React, {useEffect} from "reactn";
+import React, { useEffect } from "reactn";
 import endsWith from "lodash/endsWith";
 import map from "lodash/map";
 import replace from "lodash/replace";
-import {useAcl} from "../hooks";
-import {useRouter} from "next/router";
-import {spinLoader} from "../components/common/loader";
+import { useAcl } from "../hooks";
+import { useRouter } from "next/router";
+import { spinLoader } from "../components/common/loader";
 
 export const PrivateRoutes = (props) => {
   const router = useRouter();

@@ -1,11 +1,11 @@
-import React, {useEffect, useRef, useState} from "reactn";
+import React, { useEffect, useRef, useState } from "reactn";
 import styled from "styled-components";
-import {Image} from "./Image";
+import { Image } from "./Image";
 import get from "lodash/get";
-import {CloudUploadOutlined} from "@ant-design/icons";
-import {ButtonAnt} from "../form";
-import {useResizeImage, useUploadToStorage} from "../../hooks";
-import {Icon} from "./Icons";
+import { CloudUploadOutlined } from "@ant-design/icons";
+import { ButtonAnt } from "../form";
+import { useResizeImage, useUploadToStorage } from "../../hooks";
+import { Icon } from "./Icons";
 import defaultTo from "lodash/defaultTo";
 
 export const FileUpload = (props) => {

@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import {LoadingOutlined} from "@ant-design/icons";
-import {mediaQuery} from "../../constants";
-import {config} from "../../firebase";
-import {Spin} from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { mediaQuery } from "../../constants";
+import { config } from "../../firebase";
+import { Spin } from "antd";
 
 const antIcon = <LoadingOutlined className="spin-version-icon" />;
 

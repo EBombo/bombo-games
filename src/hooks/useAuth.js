@@ -1,12 +1,12 @@
-import {authenticationErrors} from "../firebase/authentication";
-import React, {useEffect, useGlobal, useState} from "reactn";
-import {authEvents, config, firebase} from "../firebase";
-import {useUser} from "./useLocalStorageState";
+import { authenticationErrors } from "../firebase/authentication";
+import React, { useEffect, useGlobal, useState } from "reactn";
+import { authEvents, config, firebase } from "../firebase";
+import { useUser } from "./useLocalStorageState";
 import acls from "../hooks/acl/acls.json";
 import styled from "styled-components";
-import {useFetch} from "./useFetch";
-import {dialCodes} from "../utils";
-import {notification} from "antd";
+import { useFetch } from "./useFetch";
+import { dialCodes } from "../utils";
+import { notification } from "antd";
 import get from "lodash/get";
 
 const GOOGLE_PROVIDER = "google";

@@ -11,6 +11,7 @@ import { WithConfiguration } from "../src/session/WithConfiguration";
 import { config, firestoreEvents } from "../src/firebase";
 import { snapshotToArray } from "../src/utils";
 import Head from "next/head";
+import "../src/theme/globals.css";
 import Script from "next/script";
 
 const MyApp = ({ Component, pageProps }) => {

@@ -1,5 +1,5 @@
-import React, {useGlobal} from "reactn";
-import {DrawerContainer} from "../common/DrawerContainer";
+import React, { useGlobal } from "reactn";
+import { DrawerContainer } from "../common/DrawerContainer";
 
 export const RightDrawer = (props) => {
   const [openRightDrawer, setOpenRightDrawer] = useGlobal("openRightDrawer");
