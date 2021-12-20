@@ -1,12 +1,12 @@
-import React, {useGlobal, useState} from "reactn";
+import React, { useGlobal, useState } from "reactn";
 import styled from "styled-components";
-import {Image} from "../../components/common/Image";
-import {config} from "../../firebase";
-import {ButtonBingo, InputBingo} from "../../components/form";
-import {object, string} from "yup";
-import {useForm} from "react-hook-form";
-import {ModalVerification} from "./ModalVerification";
-import {useUser} from "../../hooks";
+import { Image } from "../../components/common/Image";
+import { config } from "../../firebase";
+import { ButtonBingo, InputBingo } from "../../components/form";
+import { object, string } from "yup";
+import { useForm } from "react-hook-form";
+import { ModalVerification } from "./ModalVerification";
+import { useUser } from "../../hooks";
 
 export const EmailStep = (props) => {
   const [, setAuthUserLs] = useUser();

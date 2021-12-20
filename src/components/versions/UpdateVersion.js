@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import {config} from "../../firebase";
-import {Image} from "../common/Image";
-import {mediaQuery} from "../../constants";
-import {ButtonAnt} from "../form";
+import { config } from "../../firebase";
+import { Image } from "../common/Image";
+import { mediaQuery } from "../../constants";
+import { ButtonAnt } from "../form";
 
 const UpdateVersion = () => (
   <UpdateContainer>

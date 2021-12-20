@@ -1,5 +1,5 @@
-import React, {useEffect} from "react";
-import {useGlobal} from "reactn";
+import React, { useEffect } from "react";
+import { useGlobal } from "reactn";
 
 export const Form = (props) => {
   const [languageCode] = useGlobal("languageCode");

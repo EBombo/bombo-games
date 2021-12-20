@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {mediaQuery} from "../../constants";
+import { mediaQuery } from "../../constants";
 
 export const Distribution3Styled = styled.div`
   color: ${(props) => props.theme.basic.white};

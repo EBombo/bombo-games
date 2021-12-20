@@ -1,7 +1,7 @@
-import React, {forwardRef, Fragment} from "react";
+import React, { forwardRef, Fragment } from "react";
 import styled from "styled-components";
-import {sizes} from "../../constants";
-import {Radio as AntRadio} from "antd";
+import { sizes } from "../../constants";
+import { Radio as AntRadio } from "antd";
 
 export const Radio = forwardRef((props, ref) => (
   <Fragment>

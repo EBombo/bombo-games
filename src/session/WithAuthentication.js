@@ -1,7 +1,7 @@
-import React, {useEffect, useGlobal, useRef} from "reactn";
-import {authEvents, firestoreEvents} from "../firebase";
-import {useAuth} from "../hooks/useAuth";
-import {useUser} from "../hooks";
+import React, { useEffect, useGlobal, useRef } from "reactn";
+import { authEvents, firestoreEvents } from "../firebase";
+import { useAuth } from "../hooks/useAuth";
+import { useUser } from "../hooks";
 
 export const WithAuthentication = (props) => {
   const { createAccount } = useAuth();

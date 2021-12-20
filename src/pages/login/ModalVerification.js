@@ -1,8 +1,8 @@
 import React from "reactn";
 import styled from "styled-components";
-import {ModalContainer} from "../../components/common/ModalContainer";
-import {darkTheme} from "../../theme";
-import {ButtonBingo} from "../../components/form";
+import { ModalContainer } from "../../components/common/ModalContainer";
+import { darkTheme } from "../../theme";
+import { ButtonBingo } from "../../components/form";
 
 export const ModalVerification = (props) => (
   <ModalContainer

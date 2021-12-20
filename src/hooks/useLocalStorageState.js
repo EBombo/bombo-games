@@ -1,4 +1,4 @@
-import {createLocalStorageStateHook} from "use-local-storage-state";
+import { createLocalStorageStateHook } from "use-local-storage-state";
 import defaultTo from "lodash/defaultTo";
 import get from "lodash/get";
 import isArray from "lodash/isArray";
