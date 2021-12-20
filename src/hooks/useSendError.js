@@ -26,8 +26,6 @@ export const useSendError = () => {
       const response = await Fetch(`${config.serverUrl}/error-boundary`, "POST", error);
 
       if (response.error) throw Error(response.error.statusText);
-
-      console.log("enviado correctamente");
     } catch (error) {
       console.error("error enviando el error", error);
     }
