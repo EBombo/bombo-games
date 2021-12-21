@@ -51,6 +51,14 @@ export const NicknameStep = (props) => {
     try {
       const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
 
+      // TODO: Use subCollection to validate nickname.
+      /*
+      if (defaultTo(users, []).some((user) => user.nickname === data.nickname)) {
+        setIsValidating(false);
+        throw Error("ERROR", "El nickname ya se encuentra registrado");
+      }
+       */
+
       const newUser = {
         id: authUser?.id ?? null,
         email: authUser?.email ?? null,
@@ -72,12 +80,7 @@ export const NicknameStep = (props) => {
             countPlayers: firebase.firestore.FieldValue.increment(1),
           });
 
-          await firestoreBingo
-            .collection("lobbies")
-            .doc(lobby.id)
-            .update({
-              users: { ...lobby.users, [authUser.id]: newUser },
-            });
+          await firestoreBingo.collection("lobbies").doc(lobby.id).collection("users").doc(authUser.id).set(newUser);
 
           await saveMembers(lobby, [newUser]);
         }
