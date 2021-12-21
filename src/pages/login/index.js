@@ -19,13 +19,17 @@ const Login = (props) => {
 
   const fetchLobby = async (pin, avatar = avatars[0]) => {
     try {
+      // Fetch lobby.
       const lobbyRef = await firestore.collection("lobbies").where("pin", "==", pin.toString()).limit(1).get();
 
       if (lobbyRef.empty) throw Error("No encontramos tu sala, intenta nuevamente");
 
       const currentLobby = snapshotToArray(lobbyRef)[0];
 
-      const usersIds = Object.keys(currentLobby?.users ?? {});
+      // Fetch users collection.
+      const usersRef = await firestore.collection("lobbies").doc(currentLobby.id).collection("users").get();
+      const users = snapshotToArray(usersRef);
+      const usersIds = users.map((user) => user.id);
 
       if (!usersIds.includes(authUser?.id) && currentLobby?.isLocked) throw Error("Este juego esta cerrado");
 
