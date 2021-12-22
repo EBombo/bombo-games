@@ -87,8 +87,18 @@ const Login = (props) => {
           variant="white"
           fontSize="16px"
           onClick={() => {
-            setAuthUser(null);
-            setAuthUserLs(null);
+            setAuthUser({
+              ...authUser,
+              email: null,
+              nickname: null,
+              lobby: null,
+            });
+            setAuthUserLs({
+              ...authUser,
+              email: null,
+              nickname: null,
+              lobby: null,
+            });
           }}
         >
           Salir
