@@ -88,11 +88,41 @@ const Login = (props) => {
         {authUser?.lobby && (
           <>
             {emailIsRequired && !authUser?.email && (
-              <EmailStep isLoading={isLoading} setIsLoading={setIsLoading} {...props} />
+              <>
+                <EmailStep isLoading={isLoading} setIsLoading={setIsLoading} {...props} />
+                <div className="back">
+                  <Anchor
+                    underlined
+                    variant="white"
+                    fontSize="16px"
+                    onClick={() => {
+                      setAuthUser(null);
+                      setAuthUserLs(null);
+                    }}
+                  >
+                    Salir
+                  </Anchor>
+                </div>
+              </>
             )}
 
             {(emailIsRequired && authUser?.email && !authUser.nickname) || (!emailIsRequired && !authUser?.nickname) ? (
-              <NicknameStep isLoading={isLoading} setIsLoading={setIsLoading} {...props} />
+              <>
+                <NicknameStep isLoading={isLoading} setIsLoading={setIsLoading} {...props} />
+                <div className="back">
+                  <Anchor
+                    underlined
+                    variant="white"
+                    fontSize="16px"
+                    onClick={() => {
+                      setAuthUser(null);
+                      setAuthUserLs(null);
+                    }}
+                  >
+                    Salir
+                  </Anchor>
+                </div>
+              </>
             ) : null}
           </>
         )}
