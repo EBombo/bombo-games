@@ -1,9 +1,11 @@
 import React, { useEffect } from "reactn";
-import { useSendError } from "../../hooks";
+import { useSendError, useUser } from "../../hooks";
 import { ButtonAnt } from "../form";
 
 export const ErrorFallback = (props) => {
   const { sendError } = useSendError();
+
+  const [, setAuthUserLS] = useUser();
 
   useEffect(() => {
     if (!props.error) return;
@@ -12,6 +14,10 @@ export const ErrorFallback = (props) => {
 
     if (props.error.data) console.debug(props.error.data);
   }, [props.error]);
+
+  useEffect(() => {
+    setAuthUserLS(null);
+  }, []);
 
   return (
     <div className="container-error-server">
