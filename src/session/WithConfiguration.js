@@ -20,10 +20,10 @@ export const WithConfiguration = (props) => {
   const [, setIsVisibleLoginModal] = useGlobal("isVisibleLoginModal");
 
   const [authUserLS] = useUser();
-  const [settingsLS, setSettingsLocalStorage] = useSettings();
-  const [environment, setEnvironment] = useEnvironment();
-  const [location, setLocationLocalStorage] = useLocation();
+  const [location] = useLocation();
   const [languageCode] = useLanguageCode();
+  const [environment, setEnvironment] = useEnvironment();
+  const [settingsLS, setSettingsLocalStorage] = useSettings();
 
   const [isLoadingConfig, setIsLoadingConfig] = useState(true);
 
@@ -33,6 +33,8 @@ export const WithConfiguration = (props) => {
     const initializeConfig = async () => {
       environment !== config.firebase.projectId && localStorage.clear();
       setEnvironment(config.firebase.projectId);
+
+      console.log({ authUserLS });
 
       await setGlobal({
         user: authUserLS ? collectionToDate(authUserLS) : { id: firestore.collection("users").doc().id },
