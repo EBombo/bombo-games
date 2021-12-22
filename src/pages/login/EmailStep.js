@@ -1,18 +1,23 @@
 import React, { useGlobal, useState } from "reactn";
 import styled from "styled-components";
 import { Image } from "../../components/common/Image";
-import { config } from "../../firebase";
+import { config, firestoreBingo } from "../../firebase";
 import { ButtonBingo, InputBingo } from "../../components/form";
 import { object, string } from "yup";
 import { useForm } from "react-hook-form";
 import { ModalVerification } from "./ModalVerification";
-import { useUser } from "../../hooks";
+import { useSendError, useUser } from "../../hooks";
+import { snapshotToArray } from "../../utils";
 
 export const EmailStep = (props) => {
+  const { sendError } = useSendError();
+
   const [, setAuthUserLs] = useUser();
+
   const [authUser, setAuthUser] = useGlobal("user");
 
   const [email, setEmail] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const validationSchema = object().shape({
     email: string().required().email(),
@@ -23,7 +28,46 @@ export const EmailStep = (props) => {
     reValidateMode: "onSubmit",
   });
 
-  const emailVerification = async (data) => setEmail(data.email);
+  const emailVerification = async (data) => {
+    try {
+      setLoading(true);
+      const user_ = await fetchUserByEmail(data.email.toLowerCase());
+
+      if (user_) {
+        await setAuthUser({ ...authUser, ...user_ });
+        return setAuthUserLs({ ...authUser, ...user_ });
+      }
+
+      setEmail(data.email.toLowerCase());
+    } catch (error) {
+      props.showNotification("UPS", "Algo salio mal, intentalo nuevamente", "error");
+      await sendError(error, "emailVerification");
+    }
+    setLoading(true);
+  };
+
+  const fetchUserByEmail = async (email) => {
+    const gameName = authUser?.lobby?.game?.adminGame?.name?.toLowerCase();
+
+    // Prevent gameName is undefined.
+    if (!gameName) return;
+
+    // Create game firestore ref.
+    let firebaseRef = gameName.toLowerCase().includes("bingo")
+      ? firestoreBingo.collection("lobbies").doc(authUser.lobby.id).collection("users")
+      : null;
+
+    // Prevent firebaseRef is undefined.
+    if (!firebaseRef) return;
+
+    const userQuery = await firebaseRef.where("email", "==", email).get();
+    const currentUser = snapshotToArray(userQuery)[0];
+
+    // Prevent currentUser is undefined.
+    if (!currentUser) return;
+
+    return currentUser;
+  };
 
   return (
     <EmailForm onSubmit={handleSubmit(emailVerification)}>
@@ -60,7 +104,7 @@ export const EmailStep = (props) => {
           placeholder="Ingresa tu email"
         />
 
-        <ButtonBingo width="100%" disabled={props.isLoading} htmlType="submit">
+        <ButtonBingo width="100%" disabled={props.isLoading} htmlType="submit" loading={loading} disabled={loading}>
           Ingresar
         </ButtonBingo>
       </div>

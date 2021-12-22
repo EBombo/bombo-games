@@ -46,7 +46,6 @@ const Login = (props) => {
         throw Error("Esta sala ha concluido");
       }
 
-      console.log("update user", { avatar, ...authUser, lobby: currentLobby });
       await setAuthUser({ avatar, ...authUser, lobby: currentLobby });
       setAuthUserLs({ avatar, ...authUser, lobby: currentLobby });
     } catch (error) {
