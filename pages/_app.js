@@ -22,7 +22,7 @@ const MyApp = ({ Component, pageProps }) => {
     const initialize = async () => {
       const audiosRef = await firestoreEvents.collection("audios").where("deleted", "==", false).get();
 
-      setAudios(snapshotToArray(audiosRef));
+      await setAudios(snapshotToArray(audiosRef));
     };
 
     initialize();
