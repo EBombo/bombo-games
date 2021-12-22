@@ -47,7 +47,7 @@ export const EmailStep = (props) => {
   };
 
   const fetchUserByEmail = async (email) => {
-    const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
+    const gameName = authUser?.lobby?.game?.adminGame?.name?.toLowerCase();
 
     // Prevent gameName is undefined.
     if (!gameName) return;
