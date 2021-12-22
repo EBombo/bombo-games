@@ -26,6 +26,8 @@ const AnchorTag = styled.a`
       ? theme.basic.warning
       : variant === "danger"
       ? theme.basic.danger
+      : variant === "white"
+      ? theme.basic.whiteLight
       : theme.basic.default};
 
   :hover {
@@ -40,6 +42,8 @@ const AnchorTag = styled.a`
           ? theme.basic.warning
           : variant === "danger"
           ? theme.basic.danger
+          : variant === "white"
+          ? theme.basic.whiteLight
           : theme.basic.primary};
   }
 

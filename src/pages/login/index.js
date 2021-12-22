@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { useUser } from "../../hooks";
 import { PinStep } from "./PinStep";
 import { avatars } from "../../components/common/DataList";
+import { Anchor } from "../../components/form";
 
 const Login = (props) => {
   const router = useRouter();
@@ -78,6 +79,25 @@ const Login = (props) => {
     return !!authUser?.lobby?.settings?.userIdentity;
   }, [authUser]);
 
+  const goToPinStep = useMemo(
+    () => (
+      <div className="back">
+        <Anchor
+          underlined
+          variant="white"
+          fontSize="16px"
+          onClick={() => {
+            setAuthUser(null);
+            setAuthUserLs(null);
+          }}
+        >
+          Salir
+        </Anchor>
+      </div>
+    ),
+    []
+  );
+
   return (
     <LoginContainer storageUrl={config.storageUrl}>
       <div className="main-container">
@@ -90,38 +110,14 @@ const Login = (props) => {
             {emailIsRequired && !authUser?.email && (
               <>
                 <EmailStep isLoading={isLoading} setIsLoading={setIsLoading} {...props} />
-                <div className="back">
-                  <Anchor
-                    underlined
-                    variant="white"
-                    fontSize="16px"
-                    onClick={() => {
-                      setAuthUser(null);
-                      setAuthUserLs(null);
-                    }}
-                  >
-                    Salir
-                  </Anchor>
-                </div>
+                {goToPinStep}
               </>
             )}
 
             {(emailIsRequired && authUser?.email && !authUser.nickname) || (!emailIsRequired && !authUser?.nickname) ? (
               <>
                 <NicknameStep isLoading={isLoading} setIsLoading={setIsLoading} {...props} />
-                <div className="back">
-                  <Anchor
-                    underlined
-                    variant="white"
-                    fontSize="16px"
-                    onClick={() => {
-                      setAuthUser(null);
-                      setAuthUserLs(null);
-                    }}
-                  >
-                    Salir
-                  </Anchor>
-                </div>
+                {goToPinStep}
               </>
             ) : null}
           </>
@@ -155,6 +151,13 @@ const LoginContainer = styled.div`
       -webkit-appearance: none;
       margin: 0;
     }
+  }
+
+  .back {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0 1rem;
   }
 `;
 
