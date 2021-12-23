@@ -1,13 +1,13 @@
 import React, { useGlobal, useState } from "reactn";
 import styled from "styled-components";
 import { Image } from "../../components/common/Image";
-import { config, firestoreBingo } from "../../firebase";
+import { config } from "../../firebase";
 import { ButtonBingo, InputBingo } from "../../components/form";
 import { object, string } from "yup";
 import { useForm } from "react-hook-form";
 import { ModalVerification } from "./ModalVerification";
 import { useSendError, useUser } from "../../hooks";
-import { snapshotToArray } from "../../utils";
+import { fetchUserByEmail } from "./fetchUserByEmail";
 
 export const EmailStep = (props) => {
   const { sendError } = useSendError();
@@ -31,9 +31,12 @@ export const EmailStep = (props) => {
   const emailVerification = async (data) => {
     try {
       setLoading(true);
-      const user_ = await fetchUserByEmail(data.email.toLowerCase());
+
+      // Validate if user has already logged in before with the same email.
+      const user_ = await fetchUserByEmail(data.email.toLowerCase(), authUser.lobby);
 
       if (user_) {
+        // Replace information.
         await setAuthUser({ ...authUser, ...user_ });
         return setAuthUserLs({ ...authUser, ...user_ });
       }
@@ -44,29 +47,6 @@ export const EmailStep = (props) => {
       await sendError(error, "emailVerification");
     }
     setLoading(true);
-  };
-
-  const fetchUserByEmail = async (email) => {
-    const gameName = authUser?.lobby?.game?.adminGame?.name?.toLowerCase();
-
-    // Prevent gameName is undefined.
-    if (!gameName) return;
-
-    // Create game firestore ref.
-    let firebaseRef = gameName.toLowerCase().includes("bingo")
-      ? firestoreBingo.collection("lobbies").doc(authUser.lobby.id).collection("users")
-      : null;
-
-    // Prevent firebaseRef is undefined.
-    if (!firebaseRef) return;
-
-    const userQuery = await firebaseRef.where("email", "==", email).get();
-    const currentUser = snapshotToArray(userQuery)[0];
-
-    // Prevent currentUser is undefined.
-    if (!currentUser) return;
-
-    return currentUser;
   };
 
   return (
@@ -104,7 +84,12 @@ export const EmailStep = (props) => {
           placeholder="Ingresa tu email"
         />
 
-        <ButtonBingo width="100%" disabled={props.isLoading} htmlType="submit" loading={loading} disabled={loading}>
+        <ButtonBingo
+          width="100%"
+          disabled={props.isLoading || loading}
+          loading={props.isLoading || loading}
+          htmlType="submit"
+        >
           Ingresar
         </ButtonBingo>
       </div>
