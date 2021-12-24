@@ -67,7 +67,7 @@ const Login = (props) => {
 
       // AuthUser is admin.
       if (authUser.lobby?.game?.usersIds?.includes(authUser.id))
-        return router.push(`/bingo/lobbies/${authUser.lobby.id}`);
+        return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
 
       // Replace "newUser" if user has already logged in before with the same email.
       const user_ = authUser?.email ? await fetchUserByEmail(authUser.email, authUser.lobby) : null;
