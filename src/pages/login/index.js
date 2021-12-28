@@ -46,8 +46,10 @@ const Login = (props) => {
         throw Error("Esta sala ha concluido");
       }
 
-      await setAuthUser({ avatar, ...authUser, lobby: currentLobby });
-      setAuthUserLs({ avatar, ...authUser, lobby: currentLobby });
+      const isAdmin = currentLobby?.game?.usersIds?.includes(authUser.id);
+
+      await setAuthUser({ avatar, ...authUser, lobby: currentLobby, isAdmin });
+      setAuthUserLs({ avatar, ...authUser, lobby: currentLobby, isAdmin });
     } catch (error) {
       props.showNotification("UPS", error.message, "warning");
     }
