@@ -46,7 +46,7 @@ const Login = (props) => {
         throw Error("Esta sala ha concluido");
       }
 
-      const isAdmin = currentLobby?.game?.usersIds?.includes(authUser.id);
+      const isAdmin = !!currentLobby?.game?.usersIds?.includes(authUser.id);
 
       await setAuthUser({ avatar, ...authUser, lobby: currentLobby, isAdmin });
       setAuthUserLs({ avatar, ...authUser, lobby: currentLobby, isAdmin });
