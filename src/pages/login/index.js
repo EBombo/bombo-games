@@ -46,8 +46,10 @@ const Login = (props) => {
         throw Error("Esta sala ha concluido");
       }
 
-      await setAuthUser({ avatar, ...authUser, lobby: currentLobby });
-      setAuthUserLs({ avatar, ...authUser, lobby: currentLobby });
+      const isAdmin = !!currentLobby?.game?.usersIds?.includes(authUser.id);
+
+      await setAuthUser({ avatar, ...authUser, lobby: currentLobby, isAdmin });
+      setAuthUserLs({ avatar, ...authUser, lobby: currentLobby, isAdmin });
     } catch (error) {
       props.showNotification("UPS", error.message, "warning");
     }
@@ -64,6 +66,10 @@ const Login = (props) => {
     const initialize = async () => {
       // Get game name.
       const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
+
+      // AuthUser is admin.
+      if (authUser.lobby?.game?.usersIds?.includes(authUser.id))
+        return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
 
       // Replace "newUser" if user has already logged in before with the same email.
       const user_ = authUser?.email ? await fetchUserByEmail(authUser.email, authUser.lobby) : null;
