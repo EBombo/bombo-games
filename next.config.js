@@ -10,18 +10,7 @@ module.exports = withBundleAnalyzer({
         contextRegExp: /moment$/,
       })
     );
-    async rewrites() {
-      return [
-        {
-          source: "/bingo/:path*",
-          destination: "https://bingo-red.ebombo.io/bingo/:path*",
-        },
-        {
-          source: "/hanged/:path*",
-          destination: "https://hanged-red.ebombo.io/hanged/:path*",
-        },
-      ];
-    },
+
     config.optimization = {
       sideEffects: true,
       runtimeChunk: "single",
@@ -36,6 +25,18 @@ module.exports = withBundleAnalyzer({
     };
 
     return config;
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/bingo/:path*",
+        destination: "https://bingo-red.ebombo.io/bingo/:path*",
+      },
+      {
+        source: "/hanged/:path*",
+        destination: "https://hanged-red.ebombo.io/hanged/:path*",
+      },
+    ];
   },
   async headers() {
     return [
