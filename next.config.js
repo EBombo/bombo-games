@@ -36,6 +36,10 @@ module.exports = withBundleAnalyzer({
         source: "/hanged/:path*",
         destination: "https://hanged-red.ebombo.io/hanged/:path*",
       },
+      {
+        source: "/roulette/:path*",
+        destination: "https://roulette-red.ebombo.io/roulette/:path*",
+      },
     ];
   },
   async headers() {
