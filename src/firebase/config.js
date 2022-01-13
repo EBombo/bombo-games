@@ -45,6 +45,11 @@ let firestoreBingo;
 let storageBingo;
 let authBingo;
 
+let analyticsRoulette;
+let firestoreRoulette;
+let storageRoulette;
+let authRoulette;
+
 if (isEmpty(firebase.apps)) {
   try {
     console.log("initializeApp", isEmpty(firebase.apps));
@@ -91,6 +96,21 @@ if (isEmpty(firebase.apps)) {
   } catch (error) {
     console.error("error initializeApp", error);
   }
+  //Allow connection with roulette firebase
+  try {
+    firebase.initializeApp(config.firebaseRoulette, "roulette");
+    firestoreRoulette = firebase.app("roulette").firestore();
+    storageRoulette = firebase.app("roulette").storage();
+    authRoulette = firebase.app("roulette").auth();
+
+    if (typeof window !== "undefined") {
+      analyticsRoulette = firebase.app("roulette").analytics();
+    }
+
+    firestoreRoulette.settings({ ignoreUndefinedProperties: true });
+  } catch (error) {
+    console.error("error initializeApp", error);
+  }
 }
 
 if (DOMAIN?.includes("localhost")) {
@@ -104,6 +124,10 @@ export {
   firestoreBingo,
   storageBingo,
   authBingo,
+  analyticsRoulette,
+  firestoreRoulette,
+  storageRoulette,
+  authRoulette,
   analyticsEvents,
   firestoreEvents,
   storageEvents,
