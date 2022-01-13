@@ -104,20 +104,6 @@ const Login = (props) => {
 
       if (!firestoreRef) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
 
-      // Fetch lobby.
-      const lobbyRef = await firestoreRef.doc(`lobbies/${authUser.lobby.id}`).get();
-      const lobby = lobbyRef.data();
-
-      if (lobby?.isClosed) {
-        return setAuthUser({
-          id: firestore.collection("users").doc().id,
-          lobby: null,
-          isAdmin: false,
-          email: authUser.email,
-          nickname: authUser.nickname,
-        });
-      }
-
       // Redirect to lobby.
       if (!lobby.isPlaying) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
 
