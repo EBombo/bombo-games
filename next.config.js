@@ -41,7 +41,7 @@ module.exports = withBundleAnalyzer({
       },
       {
         source: "/roulette/:path*",
-        destination: "https://roulette-red.ebombo.io/roulette/:path*",
+        destination: "https://roulette-gold.ebombo.io/roulette/:path*",
       },
     ];
   },
