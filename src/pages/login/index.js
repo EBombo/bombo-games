@@ -1,5 +1,5 @@
 import React, { useEffect, useGlobal, useMemo, useState } from "reactn";
-import { config, firebase, firestore, firestoreBingo } from "../../firebase";
+import { config, firebase, firestore, firestoreBingo, firestoreRoulette } from "../../firebase";
 import { NicknameStep } from "./NicknameStep";
 import { snapshotToArray } from "../../utils";
 import { EmailStep } from "./EmailStep";
@@ -67,6 +67,27 @@ const Login = (props) => {
       // Get game name.
       const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
 
+      // Determine firestore ref.
+      const firestoreRef = gameName.includes("bingo")
+        ? firestoreBingo
+        : gameName.includes("roulette")
+        ? firestoreRoulette
+        : null;
+
+      // Fetch lobby.
+      const lobbyRef = await firestoreRef.doc(`lobbies/${authUser.lobby.id}`).get();
+      const lobby = lobbyRef.data();
+
+      if (lobby?.isClosed) {
+        return setAuthUser({
+          id: firestore.collection("users").doc().id,
+          lobby: null,
+          isAdmin: false,
+          email: authUser.email,
+          nickname: authUser.nickname,
+        });
+      }
+
       // AuthUser is admin.
       if (authUser.lobby?.game?.usersIds?.includes(authUser.id))
         return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
@@ -81,14 +102,7 @@ const Login = (props) => {
         return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
       }
 
-      // Determine firestore ref.
-      const firestoreRef = gameName.includes("bingo") ? firestoreBingo : null;
-
       if (!firestoreRef) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
-
-      // Fetch lobby.
-      const lobbyRef = await firestoreRef.doc(`lobbies/${authUser.lobby.id}`).get();
-      const lobby = lobbyRef.data();
 
       // Redirect to lobby.
       if (!lobby.isPlaying) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
