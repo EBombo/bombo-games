@@ -68,14 +68,7 @@ export const Register = (props) => {
   const fetchGame = async () => {
     let game, gameRef;
 
-    if (gameName === "bingo") {
-      gameRef = await firestoreBingo.collection("games").doc(gameId).get();
-    }
-
-    if (gameName === "roulette") {
-      gameRef = await firestoreRoulette.collectio("games").doc(gameId).get();
-    }
-
+    gameRef = await (gameName === "bingo" ? firestoreBingo : firestoreRoulette).collection("games").doc(gameId).get();
     game = gameRef?.data();
 
     return game;
@@ -151,7 +144,7 @@ export const Register = (props) => {
                   <div className="text-['Lato'] font-[400] text-[16px] leading-[20px] text-grayLight my-4">
                     (Se encuentra en la parte superior izquierda de tu cartilla)
                   </div>
-                  <div className="flex flex-col	 md:flex-row	">
+                  <div className="flex flex-col	md:flex-row">
                     <Input
                       ref={register}
                       error={errors.cardId}
