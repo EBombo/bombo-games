@@ -1,3 +1,7 @@
+const CONFIG = process.env.NEXT_PUBLIC_CONFIG ?? "";
+
+const config = JSON.parse(CONFIG);
+
 module.exports = {
   content: ["./pages/**/*.{js,ts,jsx,tsx}", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -33,6 +37,9 @@ module.exports = {
         gray: "#E4E4E4",
         secondGray: "#EFEFEF",
       },
+      backgroundImage: () => ({
+        "pattern": `url('${config.storageUrl}/resources/pattern.svg')`,
+      }),
     },
   },
   plugins: [],
