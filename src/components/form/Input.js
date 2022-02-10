@@ -97,11 +97,11 @@ const EyeInvisibleOutlinedCss = styled(EyeInvisibleOutlined)`
 
 const StyledInput = styled.input`
   width: 100%;
-  height: ${(props) => (props.height ? props.height : "36px")};
-  border: 1px solid ${(props) => props.theme.basic.grayLighten};
+  height: ${(props) => props.height ?? "36px"};
+  border: ${(props) => props.border ?? `1px solid ${props.theme.basic.grayLighten}`};
   box-sizing: border-box;
   border-radius: 4px !important;
-  background: ${(props) => props.theme.basic.whiteLight};
+  background: ${(props) => props.background ?? props.theme.basic.whiteLight};
   color: ${(props) => props.theme.basic.blackDarken};
 
   &:focus {
