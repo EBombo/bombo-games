@@ -47,6 +47,8 @@ export const Register = (props) => {
         .doc(visitorId)
         .set({
           ...data,
+          createAt: new Date(),
+          updateAt: new Date(),
           game: {
             id: gameId,
             name: game.name,
