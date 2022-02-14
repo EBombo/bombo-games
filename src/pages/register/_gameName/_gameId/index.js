@@ -10,9 +10,9 @@ import { useSendError } from "../../../../hooks";
 
 export const Register = (props) => {
   const router = useRouter();
-  const { sendError } = useSendError();
-
   const { gameName, gameId } = router.query;
+
+  const { sendError } = useSendError();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,32 +26,40 @@ export const Register = (props) => {
     reValidateMode: "onSubmit",
   });
 
+  const fetchGame = async (gameRef) => {
+    // Fetch game.
+    const gameQuery = await gameRef.collection("games").doc(gameId).get();
+
+    return gameQuery.data();
+  };
+
   const saveRegistration = async (data) => {
     try {
       setIsLoading(true);
-      const game = await fetchGame();
+
+      // Define firebase ref.
+      const firebaseRef = gameName === "bingo" ? firestoreBingo : firestoreRoulette;
+
+      const game = await fetchGame(firebaseRef);
 
       if (!game)
         return props.showNotification("UPS", "No se encontro el juego. Consulte con el administrador", "error");
 
-      const visitorRef = await (gameName === "bingo" ? firestoreBingo : firestoreRoulette).collection("visitors");
+      const visitorRef = firebaseRef.collection("visitors");
 
       const visitorId = visitorRef.doc().id;
 
-      await (gameName === "bingo" ? firestoreBingo : firestoreRoulette)
-        .collection("visitors")
-        .doc(visitorId)
-        .set({
-          ...data,
-          createAt: new Date(),
-          updateAt: new Date(),
-          game: {
-            id: gameId,
-            name: game.name,
-            createAt: game.createAt,
-            user: game.user,
-          },
-        });
+      await visitorRef.doc(visitorId).set({
+        ...data,
+        createAt: new Date(),
+        updateAt: new Date(),
+        game: {
+          id: gameId,
+          name: game.name,
+          createAt: game.createAt,
+          user: game.user,
+        },
+      });
 
       props.showNotification("Congratulations!", "Se ha inscrito correctamente.", "success");
       router.push("/");
@@ -61,15 +69,6 @@ export const Register = (props) => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const fetchGame = async () => {
-    let game, gameRef;
-
-    gameRef = await (gameName === "bingo" ? firestoreBingo : firestoreRoulette).collection("games").doc(gameId).get();
-    game = gameRef?.data();
-
-    return game;
   };
 
   return (
