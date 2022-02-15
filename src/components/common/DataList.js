@@ -76,3 +76,10 @@ export const templatesLegend = [
   { name: "verifyAccountLink", value: "Link de verificación" },
   { name: "code", value: "Verification code" },
 ];
+
+export const games = {
+  BINGO: 'bingo',
+  ROULETTE: 'roulette',
+  TRIVIA: 'trivia',
+};
+
