@@ -1,5 +1,5 @@
 import React, { useEffect, useGlobal, useMemo, useState } from "reactn";
-import { config, firebase, firestore, firestoreBingo, firestoreRoulette } from "../../firebase";
+import { config, firebase, firestore, firestoreBingo, firestoreRoulette, firestoreTrivia } from "../../firebase";
 import { NicknameStep } from "./NicknameStep";
 import { snapshotToArray } from "../../utils";
 import { EmailStep } from "./EmailStep";
@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import { useUser } from "../../hooks";
 import { PinStep } from "./PinStep";
-import { avatars } from "../../components/common/DataList";
+import { avatars, games } from "../../components/common/DataList";
 import { Anchor } from "../../components/form";
 import { fetchUserByEmail } from "./fetchUserByEmail";
 import { getBingoCard } from "../../constants/bingoCards";
@@ -68,10 +68,12 @@ const Login = (props) => {
       const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
 
       // Determine firestore ref.
-      const firestoreRef = gameName.includes("bingo")
+      const firestoreRef = gameName.includes(games.BINGO)
         ? firestoreBingo
-        : gameName.includes("roulette")
+        : gameName.includes(games.ROULETTE)
         ? firestoreRoulette
+        : gameName.includes(games.TRIVIA)
+        ? firestoreTrivia
         : null;
 
       // Fetch lobby.
@@ -108,7 +110,9 @@ const Login = (props) => {
       if (!lobby.isPlaying) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
 
       const userId = authUser?.id ?? firestore.collection("users").doc().id;
-      const userCard = getBingoCard();
+      const userCard = (gameName === games.BINGO)
+        ? JSON.stringify(getBingoCard())
+        : null;
 
       let newUser = {
         id: userId,
@@ -116,7 +120,7 @@ const Login = (props) => {
         email: authUser?.email ?? null,
         nickname: authUser.nickname,
         avatar: authUser?.avatar ?? null,
-        card: JSON.stringify(userCard),
+        card: userCard,
         lobbyId: lobby.id,
         lobby,
       };

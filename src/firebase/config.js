@@ -50,6 +50,11 @@ let firestoreRoulette;
 let storageRoulette;
 let authRoulette;
 
+let analyticsTrivia;
+let firestoreTrivia;
+let storageTrivia;
+let authTrivia;
+
 if (isEmpty(firebase.apps)) {
   try {
     console.log("initializeApp", isEmpty(firebase.apps));
@@ -111,6 +116,21 @@ if (isEmpty(firebase.apps)) {
   } catch (error) {
     console.error("error initializeApp", error);
   }
+  //Allow connection with trivia firebase
+  try {
+    firebase.initializeApp(config.firestoreTrivia, "trivia");
+    firestoreTrivia = firebase.app("trivia").firestore();
+    storageTrivia = firebase.app("trivia").storage();
+    authTrivia = firebase.app("trivia").auth();
+
+    if (typeof window !== "undefined") {
+      analyticsTrivia = firebase.app("trivia").analytics();
+    }
+
+    firestoreTrivia.settings({ ignoreUndefinedProperties: true });
+  } catch (error) {
+    console.error("error initializeApp", error);
+  }
 }
 
 if (DOMAIN?.includes("localhost")) {
@@ -124,6 +144,10 @@ export {
   firestoreBingo,
   storageBingo,
   authBingo,
+  analyticsTrivia,
+  firestoreTrivia,
+  storageTrivia,
+  authTrivia,
   analyticsRoulette,
   firestoreRoulette,
   storageRoulette,

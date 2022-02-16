@@ -1,5 +1,6 @@
-import { firestoreBingo } from "../../firebase";
+import { firestoreBingo, firestoreRoulette, firestoreTrivia } from "../../firebase";
 import { snapshotToArray } from "../../utils";
+import { games } from "../../components/common/DataList";
 
 export const fetchUserByEmail = async (email, lobby) => {
   const gameName = lobby?.game?.adminGame?.name?.toLowerCase();
@@ -8,8 +9,12 @@ export const fetchUserByEmail = async (email, lobby) => {
   if (!gameName) return;
 
   // Create game firestore ref.
-  let firebaseRef = gameName.includes("bingo")
+  let firebaseRef = gameName.includes(games.BINGO)
     ? firestoreBingo.collection("lobbies").doc(lobby.id).collection("users")
+    : gameName.includes(games.ROULETTE)
+    ? firestoreRoulette.collection("lobbies").doc(lobby.id).collection("users")
+    : gameName.includes(games.TRIVIA)
+    ? firestoreTrivia.collection("lobbies").doc(lobby.id).collection("users")
     : null;
 
   // Prevent firebaseRef is undefined.
