@@ -78,8 +78,7 @@ export const templatesLegend = [
 ];
 
 export const games = {
-  BINGO: 'bingo',
-  ROULETTE: 'roulette',
-  TRIVIA: 'trivia',
+  BINGO: "bingo",
+  ROULETTE: "roulette",
+  TRIVIA: "trivia",
 };
-
