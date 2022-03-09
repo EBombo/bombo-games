@@ -38,7 +38,7 @@ module.exports = {
         secondGray: "#EFEFEF",
       },
       backgroundImage: () => ({
-        "pattern": `url('${config.storageUrl}/resources/pattern.svg')`,
+        pattern: `url('${config.storageUrl}/resources/pattern.svg')`,
       }),
     },
   },
