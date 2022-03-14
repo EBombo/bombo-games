@@ -55,6 +55,11 @@ let firestoreTrivia;
 let storageTrivia;
 let authTrivia;
 
+let analyticsHanged;
+let firestoreHanged;
+let storageHanged;
+let authHanged;
+
 if (isEmpty(firebase.apps)) {
   try {
     console.log("initializeApp", isEmpty(firebase.apps));
@@ -118,7 +123,7 @@ if (isEmpty(firebase.apps)) {
   }
   //Allow connection with trivia firebase
   try {
-    firebase.initializeApp(config.firestoreTrivia, "trivia");
+    firebase.initializeApp(config.firebaseTrivia, "trivia");
     firestoreTrivia = firebase.app("trivia").firestore();
     storageTrivia = firebase.app("trivia").storage();
     authTrivia = firebase.app("trivia").auth();
@@ -131,6 +136,22 @@ if (isEmpty(firebase.apps)) {
   } catch (error) {
     console.error("error initializeApp", error);
   }
+
+  //Allow connection with hanged firebase
+  try {
+    firebase.initializeApp(config.firebaseHanged, "hanged");
+    firestoreHanged = firebase.app("hanged").firestore();
+    storageHanged = firebase.app("hanged").storage();
+    authHanged = firebase.app("hanged").auth();
+
+    if (typeof window !== "undefined") {
+      analyticsHanged = firebase.app("hanged").analytics();
+    }
+
+    firestoreHanged.settings({ ignoreUndefinedProperties: true });
+  } catch (error) {
+    console.error("error initializeApp", error);
+  }
 }
 
 if (DOMAIN?.includes("localhost")) {
@@ -140,6 +161,10 @@ if (DOMAIN?.includes("localhost")) {
 }
 
 export {
+  analyticsHanged,
+  firestoreHanged,
+  storageHanged,
+  authHanged,
   analyticsBingo,
   firestoreBingo,
   storageBingo,
