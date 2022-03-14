@@ -110,9 +110,7 @@ const Login = (props) => {
       if (!lobby.isPlaying) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
 
       const userId = authUser?.id ?? firestore.collection("users").doc().id;
-      const userCard = (gameName === games.BINGO)
-        ? JSON.stringify(getBingoCard())
-        : null;
+      const userCard = gameName === games.BINGO ? JSON.stringify(getBingoCard()) : null;
 
       let newUser = {
         id: userId,
