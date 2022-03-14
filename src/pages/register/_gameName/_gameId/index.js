@@ -1,6 +1,6 @@
 import React from "reactn";
 import UserLayout from "../../../../components/UserLayout";
-import { firestoreBingo, firestoreRoulette } from "../../../../firebase";
+import { firestoreBingo, firestoreHanged, firestoreRoulette, firestoreTrivia } from "../../../../firebase";
 import { boolean, object, string } from "yup";
 import { useForm } from "react-hook-form";
 import { ButtonAnt, Input } from "../../../../components/form";
@@ -40,7 +40,14 @@ export const Register = (props) => {
       setIsLoading(true);
 
       // Define firebase ref.
-      const firebaseRef = gameName === "bingo" ? firestoreBingo : firestoreRoulette;
+      const firebaseRef =
+        gameName === "bingo"
+          ? firestoreBingo
+          : gameName === "roulette"
+          ? firestoreRoulette
+          : gameName === "trivia"
+          ? firestoreTrivia
+          : firestoreHanged;
 
       const game = await fetchGame(firebaseRef);
 
