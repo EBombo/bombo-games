@@ -62,6 +62,7 @@ export const Register = (props) => {
         ...data,
         createAt: new Date(),
         updateAt: new Date(),
+        deleted: false,
         game: {
           id: gameId,
           name: game.name,
