@@ -60,6 +60,7 @@ export const Register = (props) => {
 
       await visitorRef.doc(visitorId).set({
         ...data,
+        id: visitorId,
         createAt: new Date(),
         updateAt: new Date(),
         deleted: false,
@@ -125,7 +126,7 @@ export const Register = (props) => {
                   name="name"
                   height="65px"
                   background="#E3E3E3"
-                  placeholder="Nombres"
+                  placeholder="Nombre"
                   border="0"
                 />
 
@@ -136,7 +137,7 @@ export const Register = (props) => {
                   background="#E3E3E3"
                   height="65px"
                   border="0"
-                  placeholder="Apellidos"
+                  placeholder="Apellido"
                 />
               </div>
             </div>
@@ -177,7 +178,7 @@ export const Register = (props) => {
                     htmlFor="attendance"
                     className="text-[16px] leading-[19px] text-['Lato'] font-[400] text-grayLight"
                   >
-                    ¡Sí!
+                    Sí
                   </label>
                 </div>
 
@@ -195,7 +196,7 @@ export const Register = (props) => {
                     htmlFor="attendance2"
                     className="text-[16px] leading-[19px] text-['Lato'] font-[400] text-grayLight"
                   >
-                    No :(
+                    No
                   </label>
                 </div>
               </div>
