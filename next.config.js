@@ -49,7 +49,7 @@ module.exports = withBundleAnalyzer({
       },
       {
         source: "/trivia/:path*",
-        destination: "https://trivia-red.ebombo.io/trivia/:path*",
+        destination: "https://trivia.ebombo.io/trivia/:path*",
       },
     ];
   },
