@@ -4,9 +4,7 @@ import { Image } from "../../components/common/Image";
 import { ButtonBingo, InputBingo } from "../../components/form";
 import { object, string } from "yup";
 import { useForm } from "react-hook-form";
-import { Carousel } from "../../components/common/Carousel";
 import { avatars } from "../../components/common/DataList";
-import { darkTheme } from "../../theme";
 
 export const PinStep = (props) => {
   const [authUser] = useGlobal("user");
@@ -31,7 +29,9 @@ export const PinStep = (props) => {
   return (
     <form onSubmit={handleSubmit(validatePin)}>
       <Image src={`${config.storageUrl}/resources/white-icon-ebombo.png`} width="180px" margin="3rem auto 2rem auto" />
-      <Carousel
+      {
+        /*
+        <Carousel
         showArrows
         hideDots
         index={avatarIdx}
@@ -50,6 +50,8 @@ export const PinStep = (props) => {
           </div>
         ))}
       />
+         */
+      }
       <div className="login-container">
         <InputBingo
           ref={register}
