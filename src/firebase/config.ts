@@ -29,36 +29,37 @@ if (DOMAIN?.includes("local") || DOMAIN?.includes("red") || DOMAIN?.includes("de
   console.log("prod", version);
 }
 
-let firestore;
-let storage;
-let auth;
-let analytics;
-let database;
 
-let analyticsEvents;
-let firestoreEvents;
-let storageEvents;
-let authEvents;
+let firestore: firebase.firestore.Firestore;
+let storage: firebase.storage.Storage;
+let auth: firebase.auth.Auth;
+let analytics: firebase.analytics.Analytics;
+let database: firebase.database.Database;
 
-let analyticsBingo;
-let firestoreBingo;
-let storageBingo;
-let authBingo;
+let analyticsEvents: firebase.analytics.Analytics;
+let firestoreEvents: firebase.firestore.Firestore;
+let storageEvents: firebase.storage.Storage;
+let authEvents: firebase.auth.Auth;
 
-let analyticsRoulette;
-let firestoreRoulette;
-let storageRoulette;
-let authRoulette;
+let analyticsBingo: firebase.analytics.Analytics;
+let firestoreBingo: firebase.firestore.Firestore;
+let storageBingo: firebase.storage.Storage;
+let authBingo: firebase.auth.Auth;
 
-let analyticsTrivia;
-let firestoreTrivia;
-let storageTrivia;
-let authTrivia;
+let analyticsRoulette: firebase.analytics.Analytics;
+let firestoreRoulette: firebase.firestore.Firestore;
+let storageRoulette: firebase.storage.Storage;
+let authRoulette: firebase.auth.Auth;
 
-let analyticsHanged;
-let firestoreHanged;
-let storageHanged;
-let authHanged;
+let analyticsTrivia: firebase.analytics.Analytics;
+let firestoreTrivia: firebase.firestore.Firestore;
+let storageTrivia: firebase.storage.Storage;
+let authTrivia: firebase.auth.Auth;
+
+let analyticsHanged: firebase.analytics.Analytics;
+let firestoreHanged: firebase.firestore.Firestore;
+let storageHanged: firebase.storage.Storage;
+let authHanged: firebase.auth.Auth;
 
 if (isEmpty(firebase.apps)) {
   try {
