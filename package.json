@@ -17,7 +17,7 @@
     "deployHostingDev": "firebase deploy --only hosting -P dev",
     "deployHostingProd": "firebase deploy --only hosting -P default",
     "startFunctions": "firebase emulators:start --only functions",
-    "test": "jest"
+    "test": "jest --setupFiles dotenv/config --forceExit"
   },
   "dependencies": {
     "antd": "^4.14.1",
@@ -59,6 +59,7 @@
     "babel-plugin-styled-components": "^1.13.1",
     "cross-env": "^7.0.3",
     "cssnano": "^5.0.13",
+    "dotenv": "^16.0.1",
     "jest": "^28.1.0",
     "next-sitemap": "^1.6.203",
     "postcss": "^8.4.5",

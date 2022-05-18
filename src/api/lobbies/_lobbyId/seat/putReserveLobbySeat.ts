@@ -21,18 +21,22 @@ const selectFirestoreFromLobby = (lobby : any) => {
   switch(gameName) {
     case games.BINGO:
       selectedFirestore = firestoreBingo;
+      break;
     case games.TRIVIA:
       selectedFirestore = firestoreTrivia;
+      break;
     case games.ROULETTE:
       selectedFirestore = firestoreRoulette;
+      break;
     case games.HANGED:
       selectedFirestore = firestoreHanged;
+      break;
   }
 
   return selectedFirestore;
 };
 
-const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
+export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
 
   const companyId = lobby.game?.user?.companyId;
   // if no companyId, then return FREE_PLAN
@@ -66,7 +70,7 @@ const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
 };
 
 // assignLobbySeat checks if can give seat in lobby to user
-const assignLobbySeat = async (lobbyId : string, userId : string, newUser : any) : Promise<AssignLobbyResponse> => {
+export const assignLobbySeat = async (lobbyId : string, userId : string, newUser : any) : Promise<AssignLobbyResponse> => {
   try {
     // fetchLobby from Firestore BomboGames 
     const lobbySnapshot_ = await firestore.doc(`lobbies/${lobbyId}`).get();
@@ -109,7 +113,7 @@ const assignLobbySeat = async (lobbyId : string, userId : string, newUser : any)
 };
 
 // reserveLobbySeatSynced runs lobby seat assignation with mutex
-const reserveLobbySeatSynced = async (lobbyId : string, userId : string, newUser : any) : Promise<AssignLobbyResponse> => {
+export const reserveLobbySeatSynced = async (lobbyId : string, userId : string, newUser : any) : Promise<AssignLobbyResponse> => {
   try {
     return await mutex.runExclusive(async () => {
 
