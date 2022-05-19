@@ -131,12 +131,12 @@ const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse) => {
     const { lobbyId } = req.query as { [key: string]: string };
     const { userId, newUser } = req.body;
 
-    reserveLobbySeatSynced(lobbyId, userId, newUser);
+    const response = await reserveLobbySeatSynced(lobbyId, userId, newUser);
 
-    return res.send({ success: true });
+    return res.send(response);
   } catch (error) {
     console.error(error);
-    return res.status(500).send("Something went wrong");
+    return res.status(500).send({success: false, error: "Something went wrong"});
   }
 };
 
