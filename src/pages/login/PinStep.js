@@ -29,8 +29,7 @@ export const PinStep = (props) => {
   return (
     <form onSubmit={handleSubmit(validatePin)}>
       <Image src={`${config.storageUrl}/resources/white-icon-ebombo.png`} width="180px" margin="3rem auto 2rem auto" />
-      {
-        /*
+      {/*
         <Carousel
         showArrows
         hideDots
@@ -50,8 +49,7 @@ export const PinStep = (props) => {
           </div>
         ))}
       />
-         */
-      }
+         */}
       <div className="login-container">
         <InputBingo
           ref={register}

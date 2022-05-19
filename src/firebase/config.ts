@@ -29,7 +29,6 @@ if (DOMAIN?.includes("local") || DOMAIN?.includes("red") || DOMAIN?.includes("de
   console.log("prod", version);
 }
 
-
 let firestore: firebase.firestore.Firestore;
 let storage: firebase.storage.Storage;
 let auth: firebase.auth.Auth;

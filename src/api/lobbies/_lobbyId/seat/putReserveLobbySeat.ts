@@ -1,24 +1,30 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Mutex } from "async-mutex";
-import { firestore, firebase, firestoreEvents, firestoreBingo, firestoreHanged, firestoreTrivia, firestoreRoulette} from "../../../../firebase";
+import {
+  firestore,
+  firebase,
+  firestoreEvents,
+  firestoreBingo,
+  firestoreHanged,
+  firestoreTrivia,
+  firestoreRoulette,
+} from "../../../../firebase";
 import { games } from "../../../../components/common/DataList";
 import { transformSubscription, FREE_PLAN } from "../../../../business";
 
 const mutex = new Mutex();
 
 interface AssignLobbyResponse {
-  success: boolean,
-  lobby?: any,
-  error?: any,
-};
+  success: boolean;
+  lobby?: any;
+  error?: any;
+}
 
-
-const selectFirestoreFromLobby = (lobby : any) => {
-
+const selectFirestoreFromLobby = (lobby: any) => {
   const gameName = lobby.game.adminGame.name.toLowerCase();
   let selectedFirestore;
 
-  switch(gameName) {
+  switch (gameName) {
     case games.BINGO:
       selectedFirestore = firestoreBingo;
       break;
@@ -37,12 +43,15 @@ const selectFirestoreFromLobby = (lobby : any) => {
 };
 
 export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
-
   const companyId = lobby.game?.user?.companyId;
   // if no companyId, then return FREE_PLAN
-  if (!companyId) return FREE_PLAN; 
+  if (!companyId) return FREE_PLAN;
 
-  const customersQuerySnapshot = await firestoreEvents.collection("customers").where("companyId", "==", companyId).limit(1).get();
+  const customersQuerySnapshot = await firestoreEvents
+    .collection("customers")
+    .where("companyId", "==", companyId)
+    .limit(1)
+    .get();
 
   if (customersQuerySnapshot.empty) return FREE_PLAN;
 
@@ -70,9 +79,9 @@ export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
 };
 
 // assignLobbySeat checks if can give seat in lobby to user
-export const assignLobbySeat = async (lobbyId : string, userId : string, newUser : any) : Promise<AssignLobbyResponse> => {
+export const assignLobbySeat = async (lobbyId: string, userId: string, newUser: any): Promise<AssignLobbyResponse> => {
   try {
-    // fetchLobby from Firestore BomboGames 
+    // fetchLobby from Firestore BomboGames
     const lobbySnapshot_ = await firestore.doc(`lobbies/${lobbyId}`).get();
 
     const lobby_ = lobbySnapshot_.data();
@@ -92,12 +101,7 @@ export const assignLobbySeat = async (lobbyId : string, userId : string, newUser
 
     // lobby room can add this user
     // Register user in lobby.
-    const promiseUser = firestore_
-      .collection("lobbies")
-      .doc(lobbyId)
-      .collection("users")
-      .doc(userId)
-      .set(newUser);
+    const promiseUser = firestore_.collection("lobbies").doc(lobbyId).collection("users").doc(userId).set(newUser);
 
     // increase counter players
     const promiseCounter = firestore_.doc(`lobbies/${lobbyId}`).update({
@@ -113,10 +117,13 @@ export const assignLobbySeat = async (lobbyId : string, userId : string, newUser
 };
 
 // reserveLobbySeatSynced runs lobby seat assignation with mutex
-export const reserveLobbySeatSynced = async (lobbyId : string, userId : string, newUser : any) : Promise<AssignLobbyResponse> => {
+export const reserveLobbySeatSynced = async (
+  lobbyId: string,
+  userId: string,
+  newUser: any
+): Promise<AssignLobbyResponse> => {
   try {
     return await mutex.runExclusive(async () => {
-
       const result = await assignLobbySeat(lobbyId, userId, newUser);
 
       return result;
@@ -136,7 +143,7 @@ const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.send(response);
   } catch (error) {
     console.error(error);
-    return res.status(500).send({success: false, error: "Something went wrong"});
+    return res.status(500).send({ success: false, error: "Something went wrong" });
   }
 };
 
