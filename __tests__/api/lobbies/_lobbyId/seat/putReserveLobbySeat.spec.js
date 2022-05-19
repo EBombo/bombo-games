@@ -2,19 +2,7 @@ import 'dotenv/config'
 import { fetchSubscriptionPlanFromLobby, reserveLobbySeatSynced } from "../../../../../src/api/lobbies/_lobbyId/seat/putReserveLobbySeat";
 import { FREE_PLAN } from '../../../../../src/business';
 import { firestore, firestoreTrivia } from "../../../../../src/firebase";
-
-// describe("sync fn", () => {
-//   it("should run once per request", async () => {
-//     const processes = [
-//       { name: "proc One", id: "CBwynuKu6oEwHvhtmnm5" },
-//       { name: "proc Two", id: "ygvhWw0WARvTCzPkyehx" },
-//     ];
-//     
-//     const tasks = processes.map((proc) => assignLobbySeat(proc.name));
-//
-//     await Promise.all(tasks);
-//   }, 8_000);
-// }, 10_000);
+import { snapshotToArray } from "../../../../../src/utils";
 
 // TODO: refactor test data because it cannot be integrated into CI/CD.
 // It depends on current companies data in ebombo-events-dev
@@ -156,7 +144,11 @@ describe("A user requests to enter into a Game Lobby", () => {
 
       expect(result?.success).toBe(true);
       expect(result?.lobby).not.toBe(null);
-    });
+
+      const lobbyUsersSnapshot = await firestoreTrivia.collection(`lobbies/${lobbyId}/users`).get();
+      
+      expect(lobbyUsersSnapshot.size).toEqual(1);
+    }, 5_000);
 
     afterAll(async () => {
       // delete all test data generated in firestore
@@ -167,5 +159,83 @@ describe("A user requests to enter into a Game Lobby", () => {
       await Promise.all([setLobbyFirebaseTriviaPromise, setLobbyFirebasePromise]);
     });
 
+  }, 5_000);
+}, 5_000);
+
+describe("reserveLobbySeatSynced", () => {
+
+  describe("when lobby has seats available and owner has a paid subscription", () => {
+    // plan supports 20 users in lobby
+    const companyId = "0Q1Z3eqGxdGXV05PmtW0";
+    const lobbyMaxSize = 20;
+    const lobbyId = `test_${firestoreTrivia.collection("lobbies").doc().id}`
+    const initialCountPlayers = 15;
+    const lobby = {
+      id: lobbyId,
+      createAt: new Date(),
+      countPlayers: initialCountPlayers,
+      game: {
+        adminGame: {
+          name: "trivia"
+        },
+        user: {
+          companyId: companyId,
+        }
+      },
+    };
+
+    beforeAll(async () => {
+      const setLobbyFirebaseTriviaPromise = firestoreTrivia.collection("lobbies").doc(lobbyId).set({
+        ...lobby,
+      });
+
+      const setLobbyFirebasePromise = firestore.collection("lobbies").doc(lobbyId).set({
+        ...lobby,
+      });
+
+      await Promise.all([setLobbyFirebaseTriviaPromise, setLobbyFirebasePromise]);
+    });
+
+    it("should run once per request", async () => {
+
+      // let userId = "test_user";
+
+      const processes = [1,2,3,4,5,6,8].map((count) => ({
+        lobbyId,
+        userId: `user_test_${count}`,
+        newUser: {
+          userId: `user_test_${count}`,
+          email: `user_test_${count}@gmail.com`,
+          nickname: `user_test_${count}`,
+          avatar: null,
+          lobbyId,
+          lobby,
+        },
+      }));
+     
+      const tasks = processes.map((proc) => reserveLobbySeatSynced(proc.lobbyId, proc.userId, proc.newUser));
+
+      const responses = await Promise.all(tasks);
+
+      const lobbyUsersSnapshot = await firestoreTrivia.collection(`lobbies/${lobbyId}/users`).get();
+
+      const actualLobbySnapshot = await firestoreTrivia.doc(`lobbies/${lobbyId}`).get();
+      const actualLobby = actualLobbySnapshot.data();
+      
+      expect(lobbyUsersSnapshot.size).toEqual(lobbyMaxSize - initialCountPlayers);
+      expect(actualLobby.countPlayers).toEqual(lobbyMaxSize);
+
+    }, 30_000);
+
+    afterAll(async () => {
+      // delete all test data generated in firestore
+      const setLobbyFirebaseTriviaPromise = firestoreTrivia.collection("lobbies").doc(lobbyId).delete();
+
+      const setLobbyFirebasePromise = firestore.collection("lobbies").doc(lobbyId).delete();
+
+      await Promise.all([setLobbyFirebaseTriviaPromise, setLobbyFirebasePromise]);
+    });
   });
-});
+
+}, 30_000);
+
