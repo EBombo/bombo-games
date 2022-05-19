@@ -4,6 +4,17 @@ import { FREE_PLAN } from '../../../../../src/business';
 import { firestore, firestoreTrivia } from "../../../../../src/firebase";
 import { snapshotToArray } from "../../../../../src/utils";
 
+
+const deleteTriviaLobbyPromises = async (lobbyId) => {
+
+  const deleteLobbyFirebaseTriviaPromise = firestoreTrivia.collection("lobbies").doc(lobbyId).delete();
+
+  const lobbyUsersFirebaseTriviaSnapshot = await firestoreTrivia.collection(`lobbies/${lobbyId}/users`).get();
+  const lobbyUsersFirebaseTriviaDeletesPromise = lobbyUsersFirebaseTriviaSnapshot.docs.map((doc) => doc.ref.delete());
+
+  await Promise.all([deleteLobbyFirebaseTriviaPromise, ...lobbyUsersFirebaseTriviaDeletesPromise]);
+};
+
 // TODO: refactor test data because it cannot be integrated into CI/CD.
 // It depends on current companies data in ebombo-events-dev
 describe("fetchSubscriptionPlanFromLobby", () => {
@@ -152,11 +163,11 @@ describe("A user requests to enter into a Game Lobby", () => {
 
     afterAll(async () => {
       // delete all test data generated in firestore
-      const setLobbyFirebaseTriviaPromise = firestoreTrivia.collection("lobbies").doc(lobbyId).delete();
-
       const setLobbyFirebasePromise = firestore.collection("lobbies").doc(lobbyId).delete();
 
-      await Promise.all([setLobbyFirebaseTriviaPromise, setLobbyFirebasePromise]);
+      await deleteTriviaLobbyPromises(lobbyId);
+
+      await Promise.all([setLobbyFirebasePromise]);
     });
 
   }, 5_000);
@@ -229,11 +240,11 @@ describe("reserveLobbySeatSynced", () => {
 
     afterAll(async () => {
       // delete all test data generated in firestore
-      const setLobbyFirebaseTriviaPromise = firestoreTrivia.collection("lobbies").doc(lobbyId).delete();
+      const deleteLobbyFirebasePromise = firestore.collection("lobbies").doc(lobbyId).delete();
 
-      const setLobbyFirebasePromise = firestore.collection("lobbies").doc(lobbyId).delete();
+      await deleteTriviaLobbyPromises(lobbyId);
 
-      await Promise.all([setLobbyFirebaseTriviaPromise, setLobbyFirebasePromise]);
+      await Promise.all([deleteLobbyFirebasePromise]);
     });
   });
 
