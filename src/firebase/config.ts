@@ -51,6 +51,7 @@ let storageRoulette: firebase.storage.Storage;
 let authRoulette: firebase.auth.Auth;
 
 let analyticsTrivia: firebase.analytics.Analytics;
+let databaseTrivia: firebase.database.Database;
 let firestoreTrivia: firebase.firestore.Firestore;
 let storageTrivia: firebase.storage.Storage;
 let authTrivia: firebase.auth.Auth;
@@ -152,6 +153,43 @@ if (isEmpty(firebase.apps)) {
   } catch (error) {
     console.error("error initializeApp", error);
   }
+} else {
+  firestore = firebase.firestore();
+
+  database = firebase.database();
+  storage = firebase.storage();
+  auth = firebase.auth();
+
+  if (typeof window !== "undefined") analytics = firebase.analytics();
+
+  // firestore.settings({ ignoreUndefinedProperties: true });
+
+  firestoreEvents = firebase.app("events").firestore();
+  storageEvents = firebase.app("events").storage();
+  authEvents = firebase.app("events").auth();
+
+  if (typeof window !== "undefined") {
+    analyticsEvents = firebase.app("events").analytics();
+  }
+  //
+  //Allow connection with trivia firebase
+  try {
+    // firebase.initializeApp(config.firebaseTrivia, "trivia");
+    firestoreTrivia = firebase.app("trivia").firestore();
+    storageTrivia = firebase.app("trivia").storage();
+    databaseTrivia = firebase.app("trivia").database();
+    authTrivia = firebase.app("trivia").auth();
+
+    if (typeof window !== "undefined") {
+      analyticsTrivia = firebase.app("trivia").analytics();
+    }
+
+    firestoreTrivia.settings({ ignoreUndefinedProperties: true });
+  } catch (error) {
+    console.error("error initializeApp", error);
+  }
+
+  // firestoreBomboGames.settings({ ignoreUndefinedProperties: true });
 }
 
 if (DOMAIN?.includes("localhost")) {
@@ -170,6 +208,7 @@ export {
   storageBingo,
   authBingo,
   analyticsTrivia,
+  databaseTrivia,
   firestoreTrivia,
   storageTrivia,
   authTrivia,

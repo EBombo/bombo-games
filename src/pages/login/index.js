@@ -6,6 +6,7 @@ import { EmailStep } from "./EmailStep";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import { useUser } from "../../hooks";
+import { useFetch } from "../../hooks/useFetch";
 import { PinStep } from "./PinStep";
 import { avatars, games } from "../../components/common/DataList";
 import { Anchor } from "../../components/form";
@@ -18,10 +19,35 @@ const Login = (props) => {
   const router = useRouter();
   const { pin } = router.query;
 
+  const { Fetch } = useFetch();
+
   const [, setAuthUserLs] = useUser();
+
   const [authUser, setAuthUser] = useGlobal("user");
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const reserveLobbySeat = async (gameName, lobbyId, userId, newUser) => {
+    try {
+      const fetchProps = {
+        // url: `${config.serverUrlLocal}/${gameName}/lobbies/${lobbyId}/seat`,
+        url: `http://localhost:3002/api/${gameName}/lobbies/${lobbyId}/seat`,
+        method: "PUT",
+      };
+
+      const { error, response } = await Fetch(fetchProps.url, fetchProps.method, {
+        userId,
+        newUser,
+      });
+
+      if (error) throw new Error(error);
+
+      return response;
+    } catch (error) {
+      sendError(error, "reserveLobbySeat");
+      return error;
+    }
+  };
 
   const fetchLobby = async (pin, avatar = avatars[0]) => {
     try {
@@ -106,9 +132,6 @@ const Login = (props) => {
 
       if (!firestoreRef) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
 
-      // Redirect to lobby.
-      if (!lobby.isPlaying) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
-
       const userId = authUser?.id ?? firestore.collection("users").doc().id;
       const userCard = gameName === games.BINGO ? JSON.stringify(getBingoCard()) : null;
 
@@ -123,23 +146,29 @@ const Login = (props) => {
         lobby,
       };
 
+      const { success } = await reserveLobbySeat(gameName, authUser.lobby.id, userId, newUser);
+
+      // Check if seat was granted.
+      if (!success) {
+        // Lobby is full. User cannot get into the lobby.
+        props.showNotification("Lobby lleno!", "No se puede ingresar debido a que el límite de lobby ha sido superado", "error");
+        return;
+      }
+
+      // awaiting in lobby
+      // Redirect to lobby.
+      if (!lobby.isPlaying) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+
+      // go directly to play
       // Update metrics.
       const promiseMetric = firestoreRef.doc(`games/${lobby.game.id}`).update({
         countPlayers: firebase.firestore.FieldValue.increment(1),
       });
 
-      // Register user in lobby.
-      const promiseUser = firestoreRef
-        .collection("lobbies")
-        .doc(lobby.id)
-        .collection("users")
-        .doc(authUser.id)
-        .set(newUser);
-
       // Register user as a member in company.
       const promiseMember = saveMembers(authUser.lobby, [newUser]);
 
-      await Promise.all([promiseMetric, promiseUser, promiseMember]);
+      await Promise.all([promiseMetric, promiseMember]);
 
       await setAuthUser(newUser);
       setAuthUserLs(newUser);

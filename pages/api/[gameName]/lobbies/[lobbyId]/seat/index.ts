@@ -1,6 +1,7 @@
 import Cors from "cors";
-import initMiddleware from "../../.././../../lib";
-import reserveLobbySeat from "../../../../../src/api/lobbies/_lobbyId/seat/putReserveLobbySeat";
+import initMiddleware from "../../.././../../../lib";
+import { reserveLobbySeat } from "../../../../../../src/api/_gameName/lobbies/_lobbyId/seat/putReserveLobbySeat";
+import { leaveLobbySeat } from "../../../../../../src/api/_gameName/lobbies/_lobbyId/seat/deleteReserveLobbySeat";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const cors = initMiddleware(
@@ -18,9 +19,12 @@ const apiLobbyReserveSeat = async (req: NextApiRequest, res: NextApiResponse) =>
   switch (req.method) {
     case "PUT":
       return await reserveLobbySeat(req, res);
+    case "DELETE":
+      return await leaveLobbySeat(req, res);
     default:
       return res.status(500).send({ error: "Method is not defined" });
   }
 };
 
 export default apiLobbyReserveSeat;
+

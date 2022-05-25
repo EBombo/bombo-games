@@ -6,11 +6,13 @@ import {
   firestoreEvents,
   firestoreBingo,
   firestoreHanged,
+  databaseTrivia,
   firestoreTrivia,
   firestoreRoulette,
-} from "../../../../firebase";
-import { games } from "../../../../components/common/DataList";
-import { transformSubscription, FREE_PLAN } from "../../../../business";
+} from "../../../../../firebase";
+import { games } from "../../../../../components/common/DataList";
+import { transformSubscription, FREE_PLAN } from "../../../../../business";
+import { selectFirestoreFromLobby } from "./utils";
 
 const mutex = new Mutex();
 
@@ -19,28 +21,6 @@ interface AssignLobbyResponse {
   lobby?: any;
   error?: any;
 }
-
-const selectFirestoreFromLobby = (lobby: any) => {
-  const gameName = lobby.game.adminGame.name.toLowerCase();
-  let selectedFirestore;
-
-  switch (gameName) {
-    case games.BINGO:
-      selectedFirestore = firestoreBingo;
-      break;
-    case games.TRIVIA:
-      selectedFirestore = firestoreTrivia;
-      break;
-    case games.ROULETTE:
-      selectedFirestore = firestoreRoulette;
-      break;
-    case games.HANGED:
-      selectedFirestore = firestoreHanged;
-      break;
-  }
-
-  return selectedFirestore;
-};
 
 export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
   const companyId = lobby.game?.user?.companyId;
@@ -79,14 +59,9 @@ export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
 };
 
 // assignLobbySeat checks if can give seat in lobby to user
-export const assignLobbySeat = async (lobbyId: string, userId: string, newUser: any): Promise<AssignLobbyResponse> => {
+export const assignLobbySeat = async (gameName : string, lobbyId: string, userId: string, newUser: any): Promise<AssignLobbyResponse> => {
   try {
-    // fetchLobby from Firestore BomboGames
-    const lobbySnapshot_ = await firestore.doc(`lobbies/${lobbyId}`).get();
-
-    const lobby_ = lobbySnapshot_.data();
-
-    const firestore_ = selectFirestoreFromLobby(lobby_);
+    const firestore_ = selectFirestoreFromLobby(gameName);
 
     if (!firestore_) throw new Error("Selected Game Database is null/undefined.");
 
@@ -99,32 +74,50 @@ export const assignLobbySeat = async (lobbyId: string, userId: string, newUser: 
 
     if (lobby?.countPlayers >= subscription.users) throw new Error("Lobby room is complete. User cannot join to lobby");
 
+
+    const optionalPromiseTasks = [];
+
     // lobby room can add this user
     // Register user in lobby.
-    const promiseUser = firestore_.collection("lobbies").doc(lobbyId).collection("users").doc(userId).set(newUser);
+    if (lobby?.isPlaying && newUser !== null) optionalPromiseTasks.push(firestore_.collection("lobbies").doc(lobbyId).collection("users").doc(userId).set(newUser, { merge: true }));
+
+    // let userAlreadyExists = false;
+
+    // if (lobby?.isPlaying) {
+    //   const lobbyUser = await firestore_.collection("lobbies").doc(lobbyId).collection("users").doc(userId).get();
+    //   userAlreadyExists = lobbyUser.exists;
+    // } else {
+    //   const realtimeLobbyUser = await databaseTrivia.ref(`/lobbies/${lobbyId}/users/${userId}`).get();
+    //   userAlreadyExists = realtimeLobbyUser.exists();
+    // }
+
+    // if (!userAlreadyExists) {
+    // }
 
     // increase counter players
-    const promiseCounter = firestore_.doc(`lobbies/${lobbyId}`).update({
+    optionalPromiseTasks.push(firestore_.doc(`lobbies/${lobbyId}`).update({
       countPlayers: firebase.firestore.FieldValue.increment(1),
-    });
+    }))
 
-    await Promise.all([promiseUser, promiseCounter]);
+    await Promise.all([...optionalPromiseTasks]);
 
     return { success: true, lobby: lobby };
   } catch (e) {
+    console.error("Error on assignLobbySeat", e);
     return { success: false, error: e };
   }
 };
 
 // reserveLobbySeatSynced runs lobby seat assignation with mutex
 export const reserveLobbySeatSynced = async (
+  gameName: string,
   lobbyId: string,
   userId: string,
-  newUser: any
+  newUser: any,
 ): Promise<AssignLobbyResponse> => {
   try {
     return await mutex.runExclusive(async () => {
-      const result = await assignLobbySeat(lobbyId, userId, newUser);
+      const result = await assignLobbySeat(gameName, lobbyId, userId, newUser);
 
       return result;
     });
@@ -133,12 +126,14 @@ export const reserveLobbySeatSynced = async (
   }
 };
 
-const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse) => {
+export const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { lobbyId } = req.query as { [key: string]: string };
+    const { lobbyId, gameName } = req.query as { [key: string]: string };
     const { userId, newUser } = req.body;
 
-    const response = await reserveLobbySeatSynced(lobbyId, userId, newUser);
+    console.log(`>>>> lobbyId ${lobbyId}, gameName ${gameName}`);
+
+    const response = await reserveLobbySeatSynced(gameName, lobbyId, userId, newUser);
 
     return res.send(response);
   } catch (error) {
@@ -147,4 +142,3 @@ const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default reserveLobbySeat;
