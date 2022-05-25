@@ -27,4 +27,3 @@ const apiLobbyReserveSeat = async (req: NextApiRequest, res: NextApiResponse) =>
 };
 
 export default apiLobbyReserveSeat;
-

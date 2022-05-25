@@ -14,7 +14,11 @@ import { transformSubscription, FREE_PLAN } from "../../../../../business";
 import { selectFirestoreFromLobby } from "./utils";
 
 // freeLobbySeat frees a seat in lobby. Reduces users counter.
-export const freeLobbySeat = async (gameName : string, lobbyId: string, userId: string): Promise<AssignLobbyResponse> => {
+export const freeLobbySeat = async (
+  gameName: string,
+  lobbyId: string,
+  userId: string
+): Promise<AssignLobbyResponse> => {
   try {
     const firestore_ = selectFirestoreFromLobby(gameName);
 
@@ -48,4 +52,3 @@ export const leaveLobbySeat = async (req: NextApiRequest, res: NextApiResponse) 
     return res.status(500).send({ success: false, error: "Something went wrong" });
   }
 };
-

@@ -59,7 +59,12 @@ export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
 };
 
 // assignLobbySeat checks if can give seat in lobby to user
-export const assignLobbySeat = async (gameName : string, lobbyId: string, userId: string, newUser: any): Promise<AssignLobbyResponse> => {
+export const assignLobbySeat = async (
+  gameName: string,
+  lobbyId: string,
+  userId: string,
+  newUser: any
+): Promise<AssignLobbyResponse> => {
   try {
     const firestore_ = selectFirestoreFromLobby(gameName);
 
@@ -74,12 +79,14 @@ export const assignLobbySeat = async (gameName : string, lobbyId: string, userId
 
     if (lobby?.countPlayers >= subscription.users) throw new Error("Lobby room is complete. User cannot join to lobby");
 
-
     const optionalPromiseTasks = [];
 
     // lobby room can add this user
     // Register user in lobby.
-    if (lobby?.isPlaying && newUser !== null) optionalPromiseTasks.push(firestore_.collection("lobbies").doc(lobbyId).collection("users").doc(userId).set(newUser, { merge: true }));
+    if (lobby?.isPlaying && newUser !== null)
+      optionalPromiseTasks.push(
+        firestore_.collection("lobbies").doc(lobbyId).collection("users").doc(userId).set(newUser, { merge: true })
+      );
 
     // let userAlreadyExists = false;
 
@@ -95,9 +102,11 @@ export const assignLobbySeat = async (gameName : string, lobbyId: string, userId
     // }
 
     // increase counter players
-    optionalPromiseTasks.push(firestore_.doc(`lobbies/${lobbyId}`).update({
-      countPlayers: firebase.firestore.FieldValue.increment(1),
-    }))
+    optionalPromiseTasks.push(
+      firestore_.doc(`lobbies/${lobbyId}`).update({
+        countPlayers: firebase.firestore.FieldValue.increment(1),
+      })
+    );
 
     await Promise.all([...optionalPromiseTasks]);
 
@@ -113,7 +122,7 @@ export const reserveLobbySeatSynced = async (
   gameName: string,
   lobbyId: string,
   userId: string,
-  newUser: any,
+  newUser: any
 ): Promise<AssignLobbyResponse> => {
   try {
     return await mutex.runExclusive(async () => {
@@ -141,4 +150,3 @@ export const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse
     return res.status(500).send({ success: false, error: "Something went wrong" });
   }
 };
-

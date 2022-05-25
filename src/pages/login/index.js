@@ -154,7 +154,11 @@ const Login = (props) => {
       // Check if seat was granted.
       if (!success) {
         // Lobby is full. User cannot get into the lobby.
-        props.showNotification("Lobby lleno!", "No se puede ingresar debido a que el límite de lobby ha sido superado", "error");
+        props.showNotification(
+          "Lobby lleno!",
+          "No se puede ingresar debido a que el límite de lobby ha sido superado",
+          "error"
+        );
         return;
       }
 
