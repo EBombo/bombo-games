@@ -135,6 +135,9 @@ const Login = (props) => {
       const userId = authUser?.id ?? firestore.collection("users").doc().id;
       const userCard = gameName === games.BINGO ? JSON.stringify(getBingoCard()) : null;
 
+      // Redirect to lobby (awaiting).
+      if (!lobby.isPlaying) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+
       let newUser = {
         id: userId,
         userId,
@@ -154,10 +157,6 @@ const Login = (props) => {
         props.showNotification("Lobby lleno!", "No se puede ingresar debido a que el límite de lobby ha sido superado", "error");
         return;
       }
-
-      // awaiting in lobby
-      // Redirect to lobby.
-      if (!lobby.isPlaying) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
 
       // go directly to play
       // Update metrics.
