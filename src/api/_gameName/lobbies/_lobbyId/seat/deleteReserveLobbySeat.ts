@@ -42,7 +42,7 @@ export const leaveLobbySeat = async (req: NextApiRequest, res: NextApiResponse) 
     const response = await freeLobbySeat(gameName, lobbyId, userId);
 
     return res.send(response);
-  } catch (error : any) {
+  } catch (error: any) {
     console.error("Error on leaveLobbySeat", error);
 
     if (error?.message === functionalErrorName) return res.status(409).send({ success: false, error: error?.message });

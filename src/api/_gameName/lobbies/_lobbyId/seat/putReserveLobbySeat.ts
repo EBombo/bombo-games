@@ -105,7 +105,6 @@ export const reserveLobbySeatSynced = async (
   userId: string,
   newUser: any
 ): Promise<AssignLobbyResponse> => {
-
   return await mutex.runExclusive(async () => {
     const result = await assignLobbySeat(gameName, lobbyId, userId, newUser);
 
@@ -123,7 +122,7 @@ export const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse
     const response = await reserveLobbySeatSynced(gameName, lobbyId, userId, newUser);
 
     return res.send(response);
-  } catch (error : any) {
+  } catch (error: any) {
     console.error("Error on reserveLobbySeat:", error);
 
     if (error?.message === functionalErrorName) return res.status(409).send({ success: false, error: error?.message });

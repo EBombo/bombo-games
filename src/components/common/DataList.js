@@ -85,4 +85,3 @@ export const games = {
 };
 
 export const functionalErrorName = "FunctionalError";
-

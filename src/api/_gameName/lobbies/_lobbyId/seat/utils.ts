@@ -41,4 +41,3 @@ export interface AssignLobbyResponse {
   lobby?: any;
   error?: any;
 }
-
