@@ -35,3 +35,10 @@ export const selectFirestoreFromLobby = (gameName: string) => {
 
   return selectedFirestore;
 };
+
+export interface AssignLobbyResponse {
+  success: boolean;
+  lobby?: any;
+  error?: any;
+}
+

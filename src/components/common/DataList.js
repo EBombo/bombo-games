@@ -83,3 +83,6 @@ export const games = {
   TRIVIA: "trivia",
   HANGED: "hanged",
 };
+
+export const functionalErrorName = "FunctionalError";
+
