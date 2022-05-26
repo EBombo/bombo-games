@@ -65,132 +65,112 @@ if (isEmpty(firebase.apps)) {
   try {
     console.log("initializeApp", isEmpty(firebase.apps));
     firebase.initializeApp(config.firebase);
-
-    firestore = firebase.firestore();
-    database = firebase.database();
-    storage = firebase.storage();
-    auth = firebase.auth();
-
-    if (typeof window !== "undefined") analytics = firebase.analytics();
-
-    firestore.settings({ ignoreUndefinedProperties: true });
   } catch (error) {
     console.error("error initializeApp", error);
   }
-  // Allow connection with events firebase
+
+  // Allow connection with events firebase.
   try {
     firebase.initializeApp(config.firebaseEvents, "events");
-    firestoreEvents = firebase.app("events").firestore();
-    storageEvents = firebase.app("events").storage();
-    authEvents = firebase.app("events").auth();
-
-    if (typeof window !== "undefined") {
-      analyticsEvents = firebase.app("events").analytics();
-    }
-
-    firestoreEvents.settings({ ignoreUndefinedProperties: true });
   } catch (error) {
     console.error("error initializeApp", error);
   }
-  //Allow connection with bingo firebase
+
+  // Allow connection with bingo firebase.
   try {
     firebase.initializeApp(config.firebaseBingo, "bingo");
-    firestoreBingo = firebase.app("bingo").firestore();
-    storageBingo = firebase.app("bingo").storage();
-    authBingo = firebase.app("bingo").auth();
-
-    if (typeof window !== "undefined") {
-      analyticsBingo = firebase.app("bingo").analytics();
-    }
-
-    firestoreBingo.settings({ ignoreUndefinedProperties: true });
   } catch (error) {
     console.error("error initializeApp", error);
   }
-  //Allow connection with roulette firebase
+
+  // Allow connection with roulette firebase.
   try {
     firebase.initializeApp(config.firebaseRoulette, "roulette");
-    firestoreRoulette = firebase.app("roulette").firestore();
-    storageRoulette = firebase.app("roulette").storage();
-    authRoulette = firebase.app("roulette").auth();
-
-    if (typeof window !== "undefined") {
-      analyticsRoulette = firebase.app("roulette").analytics();
-    }
-
-    firestoreRoulette.settings({ ignoreUndefinedProperties: true });
   } catch (error) {
     console.error("error initializeApp", error);
   }
-  //Allow connection with trivia firebase
+
+  // Allow connection with trivia firebase.
   try {
     firebase.initializeApp(config.firebaseTrivia, "trivia");
-    firestoreTrivia = firebase.app("trivia").firestore();
-    storageTrivia = firebase.app("trivia").storage();
-    authTrivia = firebase.app("trivia").auth();
-
-    if (typeof window !== "undefined") {
-      analyticsTrivia = firebase.app("trivia").analytics();
-    }
-
-    firestoreTrivia.settings({ ignoreUndefinedProperties: true });
   } catch (error) {
     console.error("error initializeApp", error);
   }
 
-  //Allow connection with hanged firebase
+  // Allow connection with hanged firebase.
   try {
     firebase.initializeApp(config.firebaseHanged, "hanged");
-    firestoreHanged = firebase.app("hanged").firestore();
-    storageHanged = firebase.app("hanged").storage();
-    authHanged = firebase.app("hanged").auth();
-
-    if (typeof window !== "undefined") {
-      analyticsHanged = firebase.app("hanged").analytics();
-    }
-
-    firestoreHanged.settings({ ignoreUndefinedProperties: true });
   } catch (error) {
     console.error("error initializeApp", error);
   }
-} else {
-  firestore = firebase.firestore();
-
-  database = firebase.database();
-  storage = firebase.storage();
-  auth = firebase.auth();
-
-  if (typeof window !== "undefined") analytics = firebase.analytics();
-
-  // firestore.settings({ ignoreUndefinedProperties: true });
-
-  firestoreEvents = firebase.app("events").firestore();
-  storageEvents = firebase.app("events").storage();
-  authEvents = firebase.app("events").auth();
-
-  if (typeof window !== "undefined") {
-    analyticsEvents = firebase.app("events").analytics();
-  }
-  //
-  //Allow connection with trivia firebase
-  try {
-    // firebase.initializeApp(config.firebaseTrivia, "trivia");
-    firestoreTrivia = firebase.app("trivia").firestore();
-    storageTrivia = firebase.app("trivia").storage();
-    databaseTrivia = firebase.app("trivia").database();
-    authTrivia = firebase.app("trivia").auth();
-
-    if (typeof window !== "undefined") {
-      analyticsTrivia = firebase.app("trivia").analytics();
-    }
-
-    firestoreTrivia.settings({ ignoreUndefinedProperties: true });
-  } catch (error) {
-    console.error("error initializeApp", error);
-  }
-
-  // firestoreBomboGames.settings({ ignoreUndefinedProperties: true });
 }
+
+// Setting Up Firebase.
+firestore = firebase.firestore();
+
+database = firebase.database();
+storage = firebase.storage();
+auth = firebase.auth();
+
+if (typeof window !== "undefined") analytics = firebase.analytics();
+
+firestore.settings({ ignoreUndefinedProperties: true, merge: true });
+
+// Setting Up Firebase Events.
+firestoreEvents = firebase.app("events").firestore();
+storageEvents = firebase.app("events").storage();
+authEvents = firebase.app("events").auth();
+
+if (typeof window !== "undefined") {
+  analyticsEvents = firebase.app("events").analytics();
+}
+
+firestoreEvents.settings({ ignoreUndefinedProperties: true, merge: true });
+
+// Setting Up Firebase Bingo.
+firestoreBingo = firebase.app("bingo").firestore();
+storageBingo = firebase.app("bingo").storage();
+authBingo = firebase.app("bingo").auth();
+
+if (typeof window !== "undefined") {
+  analyticsBingo = firebase.app("bingo").analytics();
+}
+
+firestoreBingo.settings({ ignoreUndefinedProperties: true, merge: true });
+
+// Setting Up Firebase Roulette.
+firestoreRoulette = firebase.app("roulette").firestore();
+storageRoulette = firebase.app("roulette").storage();
+authRoulette = firebase.app("roulette").auth();
+
+if (typeof window !== "undefined") {
+  analyticsRoulette = firebase.app("roulette").analytics();
+}
+
+firestoreRoulette.settings({ ignoreUndefinedProperties: true, merge: true });
+
+// Setting Up Firebase Trivia.
+firestoreTrivia = firebase.app("trivia").firestore();
+databaseTrivia = firebase.app("trivia").database();
+storageTrivia = firebase.app("trivia").storage();
+authTrivia = firebase.app("trivia").auth();
+
+if (typeof window !== "undefined") {
+  analyticsTrivia = firebase.app("trivia").analytics();
+}
+
+firestoreTrivia.settings({ ignoreUndefinedProperties: true, merge: true });
+
+// Setting Up Firebase Hanged.
+firestoreHanged = firebase.app("hanged").firestore();
+storageHanged = firebase.app("hanged").storage();
+authHanged = firebase.app("hanged").auth();
+
+if (typeof window !== "undefined") {
+  analyticsHanged = firebase.app("hanged").analytics();
+}
+
+firestoreHanged.settings({ ignoreUndefinedProperties: true, merge: true });
 
 if (DOMAIN?.includes("localhost")) {
   //config.serverUrl = config.serverUrlLocal;
