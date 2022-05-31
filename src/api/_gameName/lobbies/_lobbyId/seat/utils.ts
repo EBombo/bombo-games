@@ -1,7 +1,4 @@
 import {
-  firestore,
-  firebase,
-  firestoreEvents,
   firestoreBingo,
   firestoreHanged,
   firestoreTrivia,
@@ -14,13 +11,11 @@ export const selectFirestoreFromLobby = (gameName: string) => {
 
   let selectedFirestore;
 
-  console.log(`>>> firestoreTrivia ${firestoreTrivia}`);
   switch (gameName_) {
     case games.BINGO:
       selectedFirestore = firestoreBingo;
       break;
     case games.TRIVIA:
-      console.log(`>>> firestoreTrivia ${firestoreTrivia}`);
       selectedFirestore = firestoreTrivia;
       break;
     case games.ROULETTE:
@@ -31,8 +26,6 @@ export const selectFirestoreFromLobby = (gameName: string) => {
       break;
   }
 
-  console.log(`gameName_ ${gameName_}, selectedFirestore ${selectedFirestore}`);
-
   return selectedFirestore;
 };
 
@@ -41,3 +34,4 @@ export interface AssignLobbyResponse {
   lobby?: any;
   error?: any;
 }
+
