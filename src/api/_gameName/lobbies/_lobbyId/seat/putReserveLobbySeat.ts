@@ -1,20 +1,21 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Mutex } from "async-mutex";
 import {
-  firestore,
   firebase,
   firestoreEvents,
-  firestoreBingo,
-  firestoreHanged,
-  databaseTrivia,
-  firestoreTrivia,
-  firestoreRoulette,
 } from "../../../../../firebase";
-import { games, functionalErrorName } from "../../../../../components/common/DataList";
+import { functionalErrorName } from "../../../../../components/common/DataList";
 import { transformSubscription, FREE_PLAN } from "../../../../../business";
 import { selectFirestoreFromLobby, AssignLobbyResponse } from "./utils";
 
+export interface Lobby {
+  isPlaying?: boolean;
+  startAt?: any;
+}
+
 const mutex = new Mutex();
+
+const isLobbyPlaying = (lobby : Lobby | undefined | null) => (lobby?.isPlaying || !!lobby?.startAt);
 
 export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
   const companyId = lobby.game?.user?.companyId;
@@ -63,10 +64,26 @@ export const assignLobbySeat = async (
 
   if (!firestore_) throw new Error("Selected Game Database is null/undefined.");
 
-  // fetchLobby from game's Firestore to update data
+  // FetchLobby from game's Firestore to update data.
   const lobbySnapshot = await firestore_.doc(`lobbies/${lobbyId}`).get();
 
   const lobby = lobbySnapshot.data();
+
+  if (lobby?.isLocked) {
+    const error = new Error("Lobby is Locked. No one can join at this moment.");
+    error.name = functionalErrorName;
+    console.error("Error on assignLobbySeat:", error.message);
+    throw error;
+  }
+
+  // Check if user already exists in lobby/_lobbyId/users so it can enter
+  // without increasing countPlayers.
+  const userSnapshot = await firestore_.doc(`lobbies/${lobbyId}/users/${userId}`).get();
+  if (userSnapshot.exists && isLobbyPlaying(lobby)) {
+    userSnapshot.ref.update({ hasExited: false });
+
+    return { success: true };
+  }
 
   const subscription = await fetchSubscriptionPlanFromLobby(lobby);
 
@@ -81,7 +98,7 @@ export const assignLobbySeat = async (
 
   // Lobby room can add this user.
   // Register user in lobby.
-  if (lobby?.isPlaying && newUser !== null)
+  if (isLobbyPlaying(lobby) && newUser !== null)
     optionalPromiseTasks.push(
       firestore_.collection("lobbies").doc(lobbyId).collection("users").doc(userId).set(newUser, { merge: true })
     );
@@ -125,7 +142,7 @@ export const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse
   } catch (error: any) {
     console.error("Error on reserveLobbySeat:", error);
 
-    if (error?.message === functionalErrorName) return res.status(409).send({ success: false, error: error?.message });
+    if (error?.name === functionalErrorName) return res.status(409).send({ success: false, error: error?.message });
 
     return res.status(500).send({ success: false, error: "Something went wrong" });
   }
