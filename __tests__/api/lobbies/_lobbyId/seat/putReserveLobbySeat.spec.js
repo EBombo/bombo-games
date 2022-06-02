@@ -1,8 +1,8 @@
 import "dotenv/config";
 import {
   fetchSubscriptionPlanFromLobby,
-  reserveLobbySeatSynced,
-} from "../../../../../src/api/lobbies/_lobbyId/seat/putReserveLobbySeat";
+  assignLobbySeatSynced,
+} from "../../../../../src/api/_gameName/lobbies/_lobbyId/seat/putReserveLobbySeat";
 import { FREE_PLAN } from "../../../../../src/business";
 import { firestore, firestoreTrivia } from "../../../../../src/firebase";
 import { snapshotToArray } from "../../../../../src/utils";
@@ -101,6 +101,7 @@ describe("A user requests to enter into a Game Lobby", () => {
     const lobby = {
       id: lobbyId,
       createAt: new Date(),
+      countPlayers: 0,
       game: {
         adminGame: {
           name: "trivia",
@@ -110,6 +111,7 @@ describe("A user requests to enter into a Game Lobby", () => {
         },
       },
     };
+    const MAX_PLAYERS = 20;
 
     beforeAll(async () => {
       const setLobbyFirebaseTriviaPromise = firestoreTrivia
@@ -141,23 +143,25 @@ describe("A user requests to enter into a Game Lobby", () => {
         lobby,
       };
 
-      const result = await reserveLobbySeatSynced(lobbyId, userId, newUser);
+      const lobbyRef = firestoreTrivia.doc(`lobbies/${lobbyId}`);
 
-      expect(result?.success).toBe(true);
-      expect(result?.lobby).not.toBe(null);
+      const result = await assignLobbySeatSynced(firestoreTrivia, lobbyRef, MAX_PLAYERS, userId, newUser);
+
+      expect(result).toBe(true);
 
       const lobbyUsersSnapshot = await firestoreTrivia.collection(`lobbies/${lobbyId}/users`).get();
 
-      expect(lobbyUsersSnapshot.size).toEqual(1);
+      // If lobby is not playing then user collection should be zero
+      expect(lobbyUsersSnapshot.size).toEqual(0);
     }, 5_000);
 
     afterAll(async () => {
       // delete all test data generated in firestore
-      const setLobbyFirebasePromise = firestore.collection("lobbies").doc(lobbyId).delete();
+      const deleteLobbyFirebasePromise = firestore.collection("lobbies").doc(lobbyId).delete();
 
       await deleteTriviaLobbyPromises(lobbyId);
 
-      await Promise.all([setLobbyFirebasePromise]);
+      await Promise.all([deleteLobbyFirebasePromise]);
     });
   }, 5_000);
 }, 5_000);
@@ -217,7 +221,9 @@ describe("reserveLobbySeatSynced", () => {
         },
       }));
 
-      const tasks = processes.map((proc) => reserveLobbySeatSynced(proc.lobbyId, proc.userId, proc.newUser));
+      const lobbyRef = firestoreTrivia.doc(`lobbies/${lobbyId}`);
+
+      const tasks = processes.map((proc) => assignLobbySeatSynced(firestoreTrivia, lobbyRef, lobbyMaxSize, proc.userId, proc.newUser));
 
       const responses = await Promise.all(tasks);
 
@@ -226,7 +232,8 @@ describe("reserveLobbySeatSynced", () => {
       const actualLobbySnapshot = await firestoreTrivia.doc(`lobbies/${lobbyId}`).get();
       const actualLobby = actualLobbySnapshot.data();
 
-      expect(lobbyUsersSnapshot.size).toEqual(lobbyMaxSize - initialCountPlayers);
+      // If lobby is not playing then user collection should be zero
+      expect(lobbyUsersSnapshot.size).toEqual(0);
       expect(actualLobby.countPlayers).toEqual(lobbyMaxSize);
     }, 30_000);
 
