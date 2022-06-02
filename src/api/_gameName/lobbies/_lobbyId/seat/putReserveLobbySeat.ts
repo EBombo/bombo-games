@@ -48,7 +48,7 @@ export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
   return subscription;
 };
 
-const assignLobbySeatSynced = async (
+export const assignLobbySeatSynced = async (
   firestore_: firebase.firestore.Firestore,
   lobbyRef: firebase.firestore.DocumentReference,
   maxNumberOfPlayers: number,
