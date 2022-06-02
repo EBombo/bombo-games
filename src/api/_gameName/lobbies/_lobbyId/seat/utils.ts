@@ -1,9 +1,4 @@
-import {
-  firestoreBingo,
-  firestoreHanged,
-  firestoreTrivia,
-  firestoreRoulette,
-} from "../../../../../firebase";
+import { firestoreBingo, firestoreHanged, firestoreTrivia, firestoreRoulette } from "../../../../../firebase";
 import { games } from "../../../../../components/common/DataList";
 
 export const selectFirestoreFromLobby = (gameName: string) => {
@@ -34,4 +29,3 @@ export interface AssignLobbyResponse {
   lobby?: any;
   error?: any;
 }
-
