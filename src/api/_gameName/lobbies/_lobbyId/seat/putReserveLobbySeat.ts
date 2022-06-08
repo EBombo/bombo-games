@@ -76,15 +76,6 @@ export const assignLobbySeat = async (
     throw error;
   }
 
-  // Check if user already exists in lobby/_lobbyId/users so it can enter
-  // without increasing countPlayers.
-  const userSnapshot = await firestore_.doc(`lobbies/${lobbyId}/users/${userId}`).get();
-  if (userSnapshot.exists && isLobbyPlaying(lobby)) {
-    userSnapshot.ref.update({ hasExited: false });
-
-    return { success: true };
-  }
-
   const subscription = await fetchSubscriptionPlanFromLobby(lobby);
 
   if (lobby?.countPlayers >= subscription.users) {
