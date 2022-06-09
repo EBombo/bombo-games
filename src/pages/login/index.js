@@ -65,7 +65,7 @@ const Login = (props) => {
           id: firestore.collection("users").doc().id,
           lobby: null,
           isAdmin: false,
-          email: authUser.email,
+          email: authUser.email || null,
           nickname: authUser.nickname,
         });
 
@@ -74,8 +74,8 @@ const Login = (props) => {
 
       const isAdmin = !!currentLobby?.game?.usersIds?.includes(authUser.id);
 
-      await setAuthUser({ avatar, ...authUser, lobby: currentLobby, isAdmin });
-      setAuthUserLs({ avatar, ...authUser, lobby: currentLobby, isAdmin });
+      await setAuthUser({ avatar, ...authUser, email: authUser.email || null, lobby: currentLobby, isAdmin });
+      setAuthUserLs({ avatar, ...authUser, email: authUser.email || null, lobby: currentLobby, isAdmin });
     } catch (error) {
       props.showNotification("UPS", error.message, "warning");
     }
@@ -149,39 +149,39 @@ const Login = (props) => {
         lobby,
       };
 
-      const { success } = await reserveLobbySeat(gameName, authUser.lobby.id, userId, newUser);
+      try {
+        await reserveLobbySeat(Fetch, authUser.lobby.id, userId, newUser);
 
-      // Check if seat was granted.
-      if (!success) {
-        // Lobby is full. User cannot get into the lobby.
-        props.showNotification(
-          "Lobby lleno!",
-          "No se puede ingresar debido a que el límite de lobby ha sido superado",
-          "error"
-        );
-        return;
+        // Update metrics.
+        const promiseMetric = firestoreRef.doc(`games/${lobby.gameId}`).update({
+          countPlayers: firebase.firestore.FieldValue.increment(1),
+        });
+
+        // Register user as a member in company.
+        const promiseMember = saveMembers(authUser.lobby, [newUser]);
+
+        await Promise.all([promiseMetric, promiseMember]);
+
+        await setAuthUser(newUser);
+        setAuthUserLs(newUser);
+
+        // Redirect to lobby.
+        await router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+      } catch (error) {
+        props.showNotification("Joining to lobby is not possible.", error?.message);
+
+        return setAuthUser({
+          id: authUser.id || firestore.collection("users").doc().id,
+          lobby: null,
+          isAdmin: false,
+          email: authUser.email,
+          nickname: authUser.nickname,
+        });
       }
-
-      // go directly to play
-      // Update metrics.
-      const promiseMetric = firestoreRef.doc(`games/${lobby.game.id}`).update({
-        countPlayers: firebase.firestore.FieldValue.increment(1),
-      });
-
-      // Register user as a member in company.
-      const promiseMember = saveMembers(authUser.lobby, [newUser]);
-
-      await Promise.all([promiseMetric, promiseMember]);
-
-      await setAuthUser(newUser);
-      setAuthUserLs(newUser);
-
-      // Redirect to lobby.
-      return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
     };
 
     initialize();
-  }, [authUser]);
+  }, [authUser.id, authUser?.lobby?.id, authUser?.nickname, authUser?.email]);
 
   // Fetch lobby to auto login.
   useEffect(() => {
