@@ -27,11 +27,26 @@ export const Feedback = (props) => {
   const [playAgain, setPlayAgain] = useState(null);
 
   useEffect(() => {
-    const initialize = async () => {
-      await fetchLobby();
+    const fetchUser = async (_lobby) => {
+      const currentFirestore = gamesFirestore(_lobby?.game?.adminGame?.name);
+
+      const _userRef = await currentFirestore.collection("lobbies").doc(lobbyId).collection("users").doc(userId).get();
+
+      setUser(_userRef);
+      setLoading(false);
     };
 
-    initialize();
+    const fetchLobby = async () => {
+      const _lobbyRef = await firestore.collection("lobbies").doc(lobbyId).get();
+
+      const _lobby = _lobbyRef.data();
+
+      setLobby(_lobby);
+
+      await fetchUser(_lobby);
+    };
+
+    fetchLobby();
   }, [lobbyId, userId]);
 
   const validationSchema = object().shape({
@@ -58,25 +73,6 @@ export const Feedback = (props) => {
       default:
         return firestore;
     }
-  };
-
-  const fetchUser = async (_lobby) => {
-    const currentFirestore = gamesFirestore(_lobby?.game?.adminGame?.name);
-
-    const _userRef = await currentFirestore.collection("lobbies").doc(lobbyId).collection("users").doc(userId).get();
-
-    setUser(_userRef);
-    setLoading(false);
-  };
-
-  const fetchLobby = async () => {
-    const _lobbyRef = await firestore.collection("lobbies").doc(lobbyId).get();
-
-    const _lobby = _lobbyRef.data();
-
-    setLobby(_lobby);
-
-    await fetchUser(_lobby);
   };
 
   const saveFeedback = async (data) => {
