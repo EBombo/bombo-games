@@ -5,7 +5,7 @@ import { snapshotToArray } from "../../utils";
 import { EmailStep } from "./EmailStep";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-import { useUser } from "../../hooks";
+import { useSendError, useUser } from "../../hooks";
 import { useFetch } from "../../hooks/useFetch";
 import { PinStep } from "./PinStep";
 import { avatars, games } from "../../components/common/DataList";
@@ -19,6 +19,7 @@ const Login = (props) => {
   const router = useRouter();
   const { pin } = router.query;
 
+  const { sendError } = useSendError();
   const { Fetch } = useFetch();
 
   const [, setAuthUserLs] = useUser();
@@ -30,8 +31,7 @@ const Login = (props) => {
   const reserveLobbySeat = async (gameName, lobbyId, userId, newUser) => {
     try {
       const fetchProps = {
-        // url: `${config.serverUrlLocal}/${gameName}/lobbies/${lobbyId}/seat`,
-        url: `http://localhost:3002/api/${gameName}/lobbies/${lobbyId}/seat`,
+        url: `${config.serverUrl}/${gameName}/lobbies/${lobbyId}/seat`,
         method: "PUT",
       };
 
