@@ -36,24 +36,40 @@ module.exports = withBundleAnalyzer({
         destination: "https://bingo-red.ebombo.io/bingo/:path*",
       },
       {
+        source: "/en/bingo/:path*",
+        destination: "https://bingo-red.ebombo.io/en/bingo/:path*",
+      },
+      {
         source: "/hanged/:path*",
         destination: "https://hanged-red.ebombo.io/hanged/:path*",
+      },
+      {
+        source: "/en/hanged/:path*",
+        destination: "https://hanged-red.ebombo.io/en/hanged/:path*",
       },
       {
         source: "/roulette/:path*",
         destination: "https://roulette-red.ebombo.io/roulette/:path*",
       },
       {
+        source: "/en/roulette/:path*",
+        destination: "https://roulette-red.ebombo.io/en/roulette/:path*",
+      },
+      {
         source: "/roulettequestions/:path*",
         destination: "https://roulette-red.ebombo.io/roulettequestions/:path*",
       },
       {
-        source: "/en/trivia/:path*",
-        destination: "https://trivia-red.ebombo.io/en/trivia/:path*",
+        source: "/en/roulettequestions/:path*",
+        destination: "https://roulette-red.ebombo.io/en/roulettequestions/:path*",
       },
       {
         source: "/trivia/:path*",
         destination: "https://trivia-red.ebombo.io/trivia/:path*",
+      },
+      {
+        source: "/en/trivia/:path*",
+        destination: "https://trivia-red.ebombo.io/en/trivia/:path*",
       },
     ];
   },
