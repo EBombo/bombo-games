@@ -48,7 +48,7 @@ module.exports = withBundleAnalyzer({
         destination: "https://roulette-red.ebombo.io/roulettequestions/:path*",
       },
       {
-        source: "/trivia/en/:path*",
+        source: "/en/trivia/:path*",
         destination: "https://trivia-red.ebombo.io/en/trivia/:path*",
       },
       {
