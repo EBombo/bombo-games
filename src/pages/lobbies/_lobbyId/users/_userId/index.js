@@ -25,6 +25,11 @@ export const Feedback = (props) => {
   const [reviewScore, setReviewScore] = useState(null);
   const [playWithoutProblem, setPlayWithoutProblem] = useState(null);
   const [playAgain, setPlayAgain] = useState(null);
+  const [savingFeedback, setSavingFeedback] = useState(false);
+
+  useEffect(() => {
+    router.prefetch("/");
+  }, []);
 
   useEffect(() => {
     const fetchUser = async (_lobby) => {
@@ -53,7 +58,7 @@ export const Feedback = (props) => {
     comment: string().required(),
   });
 
-  const { register, errors, handleSubmit, control } = useForm({
+  const { register, errors, handleSubmit, reset } = useForm({
     validationSchema,
     reValidateMode: "onSubmit",
   });
@@ -79,6 +84,8 @@ export const Feedback = (props) => {
     if (!reviewScore || !playWithoutProblem || !playAgain)
       return props.showNotification("Error", "Complete todos los campos!");
 
+    setSavingFeedback(true);
+
     const currentFirestore = gamesFirestore(lobby?.game?.adminGame?.name);
 
     const newId = currentFirestore.collection("feedbacks").doc().id;
@@ -97,6 +104,17 @@ export const Feedback = (props) => {
         },
         { merge: true }
       );
+
+    props.showNotification("OK", "Muchas gracias por el feedback!", "success");
+
+    await reset();
+    setReviewScore(null);
+    setPlayWithoutProblem(null);
+    setPlayAgain(null);
+
+    await router.push("/");
+
+    setSavingFeedback(false);
   };
 
   if (loading)
@@ -224,7 +242,7 @@ export const Feedback = (props) => {
               />
             </div>
 
-            <ButtonAnt color="success" htmlType="submit">
+            <ButtonAnt color="success" htmlType="submit" loading={savingFeedback} disabled={savingFeedback}>
               Enviar
             </ButtonAnt>
           </form>
