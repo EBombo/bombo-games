@@ -112,9 +112,9 @@ export const Feedback = (props) => {
     setPlayWithoutProblem(null);
     setPlayAgain(null);
 
-    setSavingFeedback(false);
+    await router.push("/");
 
-    router.push("/");
+    setSavingFeedback(false);
   };
 
   if (loading)
