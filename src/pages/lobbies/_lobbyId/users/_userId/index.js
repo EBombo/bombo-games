@@ -83,17 +83,20 @@ export const Feedback = (props) => {
 
     const newId = currentFirestore.collection("feedbacks").doc().id;
 
-    await currentFirestore.collection("feedbacks").doc(newId).set(
-      {
-        reviewScore,
-        playWithoutProblem,
-        playAgain,
-        comment: data.comment,
-        lobbyId,
-        user,
-      },
-      { merge: true }
-    );
+    await currentFirestore
+      .collection("feedbacks")
+      .doc(newId)
+      .set(
+        {
+          reviewScore,
+          playWithoutProblem,
+          playAgain,
+          comment: data.comment,
+          lobbyId,
+          user: JSON.stringify(user),
+        },
+        { merge: true }
+      );
   };
 
   if (loading)
