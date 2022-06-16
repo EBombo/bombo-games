@@ -66,7 +66,6 @@ export const Feedback = (props) => {
   });
 
   const gamesFirestore = (name) => {
-    console.log(name);
     switch (name) {
       case "bingo":
         return firestoreBingo;
@@ -121,7 +120,7 @@ export const Feedback = (props) => {
     setSavingFeedback(false);
   };
 
-  if (loading)
+  if (loading || !user || !lobby)
     return <div className="bg-secondary w-full h-screen bg-center bg-contain bg-pattern">{spinLoader()}</div>;
 
   return (
