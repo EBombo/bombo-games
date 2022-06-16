@@ -37,7 +37,9 @@ export const Feedback = (props) => {
 
       const _userRef = await currentFirestore.collection("lobbies").doc(lobbyId).collection("users").doc(userId).get();
 
-      setUser(_userRef);
+      const _user = _userRef.data();
+
+      setUser(_user);
       setLoading(false);
     };
 
@@ -64,6 +66,7 @@ export const Feedback = (props) => {
   });
 
   const gamesFirestore = (name) => {
+    console.log(name);
     switch (name) {
       case "bingo":
         return firestoreBingo;
@@ -101,6 +104,7 @@ export const Feedback = (props) => {
           comment: data.comment,
           lobbyId,
           user: JSON.stringify(user),
+          createAt: new Date(),
         },
         { merge: true }
       );
