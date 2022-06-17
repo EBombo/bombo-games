@@ -91,7 +91,7 @@ export const assignLobbySeat = async (
   // Register user in lobby.
   if (isLobbyPlaying(lobby) && newUser !== null)
     optionalPromiseTasks.push(
-      firestore_.collection("lobbies").doc(lobbyId).collection("users").doc(userId).set(newUser, { merge: true })
+      firestore_.collection("lobbies").doc(lobbyId).collection("users").doc(userId).set({ ...newUser, hasExited: false }, { merge: true })
     );
 
   // Increase counter players.
