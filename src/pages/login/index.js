@@ -254,6 +254,7 @@ const Login = (props) => {
                         nickname: null,
                         lobby: null,
                       });
+
                       setAuthUserLs({
                         ...authUser,
                         email: null,
