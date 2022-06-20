@@ -56,6 +56,7 @@ export const PinStep = (props) => {
           error={errors.pin}
           type="number"
           name="pin"
+          className="test-pin"
           align="center"
           width="100%"
           variant="default"
@@ -64,7 +65,14 @@ export const PinStep = (props) => {
           disabled={props.isLoading}
           placeholder="Pin del juego"
         />
-        <ButtonBingo width="100%" disabled={props.isLoading} loading={props.isLoading} htmlType="submit">
+
+        <ButtonBingo
+          width="100%"
+          disabled={props.isLoading}
+          loading={props.isLoading}
+          htmlType="submit"
+          className="test-btn-validate-pin"
+        >
           Ingresar
         </ButtonBingo>
       </div>
