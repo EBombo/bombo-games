@@ -81,4 +81,7 @@ export const games = {
   BINGO: "bingo",
   ROULETTE: "roulette",
   TRIVIA: "trivia",
+  HANGED: "hanged",
 };
+
+export const functionalErrorName = "FunctionalError";

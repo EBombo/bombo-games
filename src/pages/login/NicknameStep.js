@@ -50,9 +50,16 @@ export const NicknameStep = (props) => {
           disabled={props.isLoading}
           placeholder="Apodo"
           autoComplete="off"
+          className="test-nickname"
         />
 
-        <ButtonBingo width="100%" disabled={props.isLoading} loading={props.isLoading} htmlType="submit">
+        <ButtonBingo
+          width="100%"
+          disabled={props.isLoading}
+          loading={props.isLoading}
+          htmlType="submit"
+          className="test-btn-validate-nickname"
+        >
           Ingresar
         </ButtonBingo>
       </div>

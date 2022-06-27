@@ -29,8 +29,7 @@ export const PinStep = (props) => {
   return (
     <form onSubmit={handleSubmit(validatePin)}>
       <Image src={`${config.storageUrl}/resources/white-icon-ebombo.png`} width="180px" margin="3rem auto 2rem auto" />
-      {
-        /*
+      {/*
         <Carousel
         showArrows
         hideDots
@@ -50,14 +49,14 @@ export const PinStep = (props) => {
           </div>
         ))}
       />
-         */
-      }
+         */}
       <div className="login-container">
         <InputBingo
           ref={register}
           error={errors.pin}
           type="number"
           name="pin"
+          className="test-pin"
           align="center"
           width="100%"
           variant="default"
@@ -66,7 +65,14 @@ export const PinStep = (props) => {
           disabled={props.isLoading}
           placeholder="Pin del juego"
         />
-        <ButtonBingo width="100%" disabled={props.isLoading} loading={props.isLoading} htmlType="submit">
+
+        <ButtonBingo
+          width="100%"
+          disabled={props.isLoading}
+          loading={props.isLoading}
+          htmlType="submit"
+          className="test-btn-validate-pin"
+        >
           Ingresar
         </ButtonBingo>
       </div>

@@ -10,15 +10,17 @@ export const Image = (props) => (
 
 const ImageCss = styled.div`
   background-image: url("${(props) => props.src}");
-  background-repeat: no-repeat;
-  background-position: ${(props) => props.bgposition || "center"};
+  background-repeat: ${(props) => props.repeat ?? "no-repeat"};
+  background-position: ${(props) => props.bgposition ?? "center"};
   background-size: ${(props) => (props.size ? props.size : "100%")};
   height: ${(props) => (props.height ? props.height : "100%")};
   width: ${(props) => (props.width ? props.width : "100%")};
   margin: ${(props) => props.margin || "auto"};
   cursor: ${(props) => props.cursor || "default"};
-  ${(props) => (props.opacity ? "background-color: rgba(0,0,0,0.3);" : "")}
   filter: ${(props) => (props.filter ? props.filter : "none")};
+  border-radius: ${(props) => (props.borderRadius ? props.borderRadius : "0")};
+  border: ${(props) => (props.border ? props.border : "none")};
+  ${(props) => (props.opacity ? "background-color: rgba(0,0,0,0.3);" : "")}
   ${(props) => (props.zIndex ? `z-index:${props.zIndex};` : "")}
 
   ${mediaQuery.afterMobile} {

@@ -21,7 +21,6 @@ const CheckboxContainer = styled.div`
 `;
 
 const StyledCheckboxGroup = styled(AntCheckbox)`
-  margin-bottom: 1rem !important;
   ${(props) =>
     props.hasError &&
     `
