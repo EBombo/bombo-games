@@ -1,10 +1,5 @@
-import {
-  firestoreBingo,
-  firestoreHanged,
-  firestoreTrivia,
-  firestoreRoulette,
-} from "../../../../../firebase";
-import { games } from "../../../../../components/common/DataList";
+import { firestoreBingo, firestoreHanged, firestoreTrivia, firestoreRoulette } from "../../../../../firebase";
+import { functionalErrorName, games } from "../../../../../components/common/DataList";
 
 export const selectFirestoreFromLobby = (gameName: string) => {
   const gameName_ = gameName.toLowerCase();
@@ -35,3 +30,9 @@ export interface AssignLobbyResponse {
   error?: any;
 }
 
+export class FunctionalError extends Error {
+  constructor(msg: string) {
+    super(msg);
+    this.name = functionalErrorName;
+  }
+}
