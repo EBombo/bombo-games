@@ -5,10 +5,12 @@ import { useForm } from "react-hook-form";
 import { config } from "../../firebase";
 import styled from "styled-components";
 import { object, string } from "yup";
-import { useUser } from "../../hooks";
+import { useTranslation, useUser } from "../../hooks";
 import { ValidateNickname } from "./ValidateNickname";
 
 export const NicknameStep = (props) => {
+  const { t } = useTranslation("login");
+
   const [, setAuthUserLs] = useUser();
 
   const [authUser, setAuthUser] = useGlobal("user");
@@ -48,7 +50,7 @@ export const NicknameStep = (props) => {
           variant="default"
           defaultValue={authUser?.nickname ?? null}
           disabled={props.isLoading}
-          placeholder="Apodo"
+          placeholder={t("nickname")}
           autoComplete="off"
           className="test-nickname"
         />
@@ -60,7 +62,7 @@ export const NicknameStep = (props) => {
           htmlType="submit"
           className="test-btn-validate-nickname"
         >
-          Ingresar
+          {t("get-in")}
         </ButtonBingo>
       </div>
     </NicknameForm>

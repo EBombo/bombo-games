@@ -1,0 +1,18 @@
+{
+  "login": {
+    "game-pin": "Game pin",
+    "get-in": "Get in",
+    "remove-info": "Remove email and nickname",
+    "something-went-wrong": "Something went wrong, try again",
+    "saved-player-id": "Saved Player infomation",
+    "add-player-id": "Add Player ID",
+    "the-host-of-the-game": "The host of the game has requested that you enter your email as an identification measure to enter the game",
+    "modal-verification": "The next time you play you won't need to enter your player ID again, so you can log in quickly. You can change it in settings at any time.",
+    "enter-your-email": "Enter your email",
+    "room-is-over": "This room is over",
+    "game-is-closed": "This game is closed",
+    "cant-find-room": "We can't find your room, please try again",
+    "back": "Back",
+    "nickname": "Nickname"
+  }
+}

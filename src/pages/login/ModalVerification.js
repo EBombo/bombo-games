@@ -3,29 +3,31 @@ import styled from "styled-components";
 import { ModalContainer } from "../../components/common/ModalContainer";
 import { darkTheme } from "../../theme";
 import { ButtonBingo } from "../../components/form";
+import { useTranslation } from "../../hooks";
 
-export const ModalVerification = (props) => (
-  <ModalContainer
-    footer={null}
-    closable={false}
-    visible={props.isVisibleModalVerification}
-    padding={"1rem"}
-    topDesktop="20%"
-    background={darkTheme.basic.whiteLight}
-    onCancel={() => props.setIsVisibleModalVerification(props.email)}
-  >
-    <ContentModal>
-      <div className="title">Identificación del jugador grabada</div>
-      <div className="description">
-        La próxima vez que juegues no va a ser necesario que coloques tu identificación de jugador otra vez, así que
-        puedes ingresar rápidamente. Lo puedes cambiar en ajustes en cualquier momento.
-      </div>
-      <ButtonBingo variant="secondary" width="200px" onClick={() => props.setIsVisibleModalVerification(props.email)}>
-        Ok
-      </ButtonBingo>
-    </ContentModal>
-  </ModalContainer>
-);
+export const ModalVerification = (props) => {
+  const { t } = useTranslation("login");
+
+  return (
+    <ModalContainer
+      footer={null}
+      closable={false}
+      visible={props.isVisibleModalVerification}
+      padding={"1rem"}
+      topDesktop="20%"
+      background={darkTheme.basic.whiteLight}
+      onCancel={() => props.setIsVisibleModalVerification(props.email)}
+    >
+      <ContentModal>
+        <div className="title">{t("saved-player-id")}</div>
+        <div className="description">{t("modal-verification")}</div>
+        <ButtonBingo variant="secondary" width="200px" onClick={() => props.setIsVisibleModalVerification(props.email)}>
+          Ok
+        </ButtonBingo>
+      </ContentModal>
+    </ModalContainer>
+  );
+};
 
 const ContentModal = styled.div`
   .title {

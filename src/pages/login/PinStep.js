@@ -5,8 +5,11 @@ import { ButtonBingo, InputBingo } from "../../components/form";
 import { object, string } from "yup";
 import { useForm } from "react-hook-form";
 import { avatars } from "../../components/common/DataList";
+import { useTranslation } from "../../hooks";
 
 export const PinStep = (props) => {
+  const { t } = useTranslation("login");
+
   const [authUser] = useGlobal("user");
 
   const [avatarIdx, setAvatarIdx] = useState(0);
@@ -63,7 +66,7 @@ export const PinStep = (props) => {
           margin="10px auto"
           defaultValue={authUser?.lobby?.pin ?? null}
           disabled={props.isLoading}
-          placeholder="Pin del juego"
+          placeholder={t("game-pin")}
         />
 
         <ButtonBingo
@@ -73,7 +76,7 @@ export const PinStep = (props) => {
           htmlType="submit"
           className="test-btn-validate-pin"
         >
-          Ingresar
+          {t("get-in")}
         </ButtonBingo>
       </div>
     </form>

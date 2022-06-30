@@ -1,0 +1,18 @@
+{
+  "login": {
+    "game-pin": "Pin del juego",
+    "get-in": "Ingresar",
+    "remove-info": "Remover email y nickname",
+    "something-went-wrong": "Algo salio mal, intentalo nuevamente",
+    "saved-player-id": "Identificación del jugador guardada",
+    "add-player-id": "Añadir identificación del jugador",
+    "the-host-of-the-game": "El anfitrión del juego ha pedido que coloques tu email cómo una medida de identificación para entrar al juego",
+    "modal-verification": "La próxima vez que juegues no va a ser necesario que coloques tu identificación de jugador otra vez, así que puedes ingresar rápidamente. Lo puedes cambiar en ajustes en cualquier momento.",
+    "enter-your-email": "Ingresa tu email",
+    "room-is-over": "Esta sala ha concluido",
+    "game-is-closed": "Este juego está cerrado",
+    "cant-find-room": "No encontramos tu sala, intenta nuevamente",
+    "back": "Volver",
+    "nickname": "Apodo"
+  }
+}

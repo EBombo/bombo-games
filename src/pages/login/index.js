@@ -5,7 +5,7 @@ import { snapshotToArray } from "../../utils";
 import { EmailStep } from "./EmailStep";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-import { useSendError, useUser } from "../../hooks";
+import { useSendError, useTranslation, useUser } from "../../hooks";
 import { useFetch } from "../../hooks/useFetch";
 import { PinStep } from "./PinStep";
 import { avatars, games } from "../../components/common/DataList";
@@ -19,8 +19,11 @@ const Login = (props) => {
   const router = useRouter();
   const { pin } = router.query;
 
-  const { sendError } = useSendError();
   const { Fetch } = useFetch();
+
+  const { sendError } = useSendError();
+
+  const { t, SwitchTranslation } = useTranslation("login");
 
   const [, setAuthUserLs] = useUser();
 
@@ -54,11 +57,11 @@ const Login = (props) => {
       // Fetch lobby.
       const lobbyRef = await firestore.collection("lobbies").where("pin", "==", pin.toString()).limit(1).get();
 
-      if (lobbyRef.empty) throw Error("No encontramos tu sala, intenta nuevamente");
+      if (lobbyRef.empty) throw Error(t("cant-find-room"));
 
       const currentLobby = snapshotToArray(lobbyRef)[0];
 
-      if (currentLobby?.isLocked) throw Error("Este juego esta cerrado");
+      if (currentLobby?.isLocked) throw Error(t("game-is-closed"));
 
       if (currentLobby?.isClosed) {
         await setAuthUser({
@@ -69,7 +72,7 @@ const Login = (props) => {
           nickname: authUser.nickname,
         });
 
-        throw Error("Esta sala ha concluido");
+        throw Error(t("room-is-over"));
       }
 
       const isAdmin = !!currentLobby?.game?.usersIds?.includes(authUser.id);
@@ -225,7 +228,7 @@ const Login = (props) => {
             });
           }}
         >
-          Volver
+          {t("back")}
         </Anchor>
       </div>
     ),
@@ -234,6 +237,10 @@ const Login = (props) => {
 
   return (
     <LoginContainer storageUrl={config.storageUrl}>
+      <div className="absolute top-4 right-4 lg:top-10 lg:right-10">
+        <SwitchTranslation />
+      </div>
+
       <div className="main-container">
         {!authUser?.lobby && (
           <>
@@ -262,7 +269,7 @@ const Login = (props) => {
                       });
                     }}
                   >
-                    Remover email y nickname
+                    {t("remove-info")}
                   </Anchor>
                 </Tooltip>
               </div>
