@@ -11,6 +11,8 @@
     "enter-your-email": "Ingresa tu email",
     "room-is-over": "Esta sala ha concluido",
     "game-is-closed": "Este juego está cerrado",
-    "cant-find-room": "No encontramos tu sala, intenta nuevamente"
+    "cant-find-room": "No encontramos tu sala, intenta nuevamente",
+    "back": "Volver",
+    "nickname": "Apodo"
   }
 }

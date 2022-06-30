@@ -11,6 +11,8 @@
     "enter-your-email": "Enter your email",
     "room-is-over": "This room is over",
     "game-is-closed": "This game is closed",
-    "cant-find-room": "We can't find your room, please try again"
+    "cant-find-room": "We can't find your room, please try again",
+    "back": "Back",
+    "nickname": "Nickname"
   }
 }

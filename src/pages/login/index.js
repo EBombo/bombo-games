@@ -228,7 +228,7 @@ const Login = (props) => {
             });
           }}
         >
-          Volver
+          {t("back")}
         </Anchor>
       </div>
     ),

@@ -50,7 +50,7 @@ export const NicknameStep = (props) => {
           variant="default"
           defaultValue={authUser?.nickname ?? null}
           disabled={props.isLoading}
-          placeholder="Apodo"
+          placeholder={t("nickname")}
           autoComplete="off"
           className="test-nickname"
         />
