@@ -5,7 +5,7 @@ import { snapshotToArray } from "../../utils";
 import { EmailStep } from "./EmailStep";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-import { useSendError, useUser } from "../../hooks";
+import { useSendError, useTranslation, useUser } from "../../hooks";
 import { useFetch } from "../../hooks/useFetch";
 import { PinStep } from "./PinStep";
 import { avatars, games } from "../../components/common/DataList";
@@ -19,8 +19,11 @@ const Login = (props) => {
   const router = useRouter();
   const { pin } = router.query;
 
-  const { sendError } = useSendError();
   const { Fetch } = useFetch();
+
+  const { sendError } = useSendError();
+
+  const { t, SwitchTranslation } = useTranslation();
 
   const [, setAuthUserLs] = useUser();
 
@@ -234,6 +237,10 @@ const Login = (props) => {
 
   return (
     <LoginContainer storageUrl={config.storageUrl}>
+      <div className="absolute top-4 right-4 lg:top-10 lg:right-10">
+        <SwitchTranslation />
+      </div>
+
       <div className="main-container">
         {!authUser?.lobby && (
           <>
