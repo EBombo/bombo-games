@@ -75,10 +75,6 @@ module.exports = withBundleAnalyzer({
         source: "/en/trivia/:path*",
         destination: "https://trivia-red.ebombo.io/en/trivia/:path*",
       },
-      {
-        source: "/trivia/:path*",
-        destination: "https://trivia-red.ebombo.io/trivia/:path*",
-      },
     ];
   },
   async headers() {
