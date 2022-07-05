@@ -246,7 +246,7 @@ const Login = (props) => {
           <>
             <PinStep isLoading={isLoading} setIsLoading={setIsLoading} fetchLobby={fetchLobby} {...props} />
 
-            {authUser?.email && authUser?.nickname && (
+            {(authUser?.email || authUser?.nickname) && (
               <div className="back">
                 <Tooltip title={`email: ${authUser.email} nickname: ${authUser.nickname}`} placement="bottom">
                   <Anchor
