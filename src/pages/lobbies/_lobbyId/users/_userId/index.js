@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "reactn";
 import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
-import { object, string } from "yup";
 import {
   config,
   firestore,
@@ -26,6 +24,7 @@ export const Feedback = (props) => {
   const [playWithoutProblem, setPlayWithoutProblem] = useState(null);
   const [playAgain, setPlayAgain] = useState(null);
   const [savingFeedback, setSavingFeedback] = useState(false);
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
     router.prefetch("/");
@@ -56,15 +55,6 @@ export const Feedback = (props) => {
     fetchLobby();
   }, [lobbyId, userId]);
 
-  const validationSchema = object().shape({
-    comment: string().required(),
-  });
-
-  const { register, errors, handleSubmit, reset } = useForm({
-    validationSchema,
-    reValidateMode: "onSubmit",
-  });
-
   const gamesFirestore = (name) => {
     switch (name) {
       case "bingo":
@@ -82,7 +72,7 @@ export const Feedback = (props) => {
     }
   };
 
-  const saveFeedback = async (data) => {
+  const saveFeedback = async () => {
     if (!reviewScore || !playWithoutProblem || !playAgain)
       return props.showNotification("Error", "Complete todos los campos!");
 
@@ -98,9 +88,9 @@ export const Feedback = (props) => {
       .set(
         {
           reviewScore,
-          playWithoutProblem,
+          playWithoutProblem: playWithoutProblem === "yes" ? true : false,
           playAgain,
-          comment: data.comment,
+          comment,
           lobbyId,
           user: JSON.stringify(user),
           createAt: new Date(),
@@ -110,8 +100,8 @@ export const Feedback = (props) => {
 
     props.showNotification("OK", "Muchas gracias por el feedback!", "success");
 
-    await reset();
     setReviewScore(null);
+    setComment("");
     setPlayWithoutProblem(null);
     setPlayAgain(null);
 
@@ -136,7 +126,7 @@ export const Feedback = (props) => {
           ¡Esperamos que la hayas pasado genial! ¡Déjanos tu opinión!
         </div>
         <div className="w-full p-4">
-          <form onSubmit={handleSubmit(saveFeedback)} className="w-full bg-whiteDark p-4 rounded-[4px]">
+          <div className="w-full bg-whiteDark p-4 rounded-[4px]">
             <div className="bg-whiteLight p-2 rounded-[4px]">
               <div className="text-grayLight text-[14px] leading-[17px] mb-4 font-[700]">¿Te divertiste?</div>
               <div className="text-grayLight text-[14px] leading-[17px] mb-4 font-[400]">
@@ -204,11 +194,11 @@ export const Feedback = (props) => {
             <div className="bg-whiteLight p-2 rounded-[4px] flex items-center justify-between my-4">
               <div className="text-grayLight text-[14px] leading-[17px] font-[700]">¿Jugaste sin problema?</div>
               <div className="flex items-center gap-4">
-                <Checkbox checked={playWithoutProblem} onChange={() => setPlayWithoutProblem(true)}>
+                <Checkbox checked={playWithoutProblem === "yes"} onChange={() => setPlayWithoutProblem("yes")}>
                   Si
                 </Checkbox>
 
-                <Checkbox checked={playWithoutProblem === false} onChange={() => setPlayWithoutProblem(false)}>
+                <Checkbox checked={playWithoutProblem === "no"} onChange={() => setPlayWithoutProblem("no")}>
                   No
                 </Checkbox>
               </div>
@@ -239,16 +229,24 @@ export const Feedback = (props) => {
                 background="#F2F2F2"
                 color="#242424"
                 name="comment"
-                ref={register}
-                error={errors.comment}
+                onChange={(e) => {
+                  e.preventDefault();
+                  setComment(e.target.value);
+                }}
+                value={comment}
                 placeholder="Escribe aquí"
               />
             </div>
 
-            <ButtonAnt color="success" htmlType="submit" loading={savingFeedback} disabled={savingFeedback}>
+            <ButtonAnt
+              color="success"
+              onClick={() => saveFeedback()}
+              loading={savingFeedback}
+              disabled={savingFeedback}
+            >
               Enviar
             </ButtonAnt>
-          </form>
+          </div>
         </div>
       </div>
     </div>
