@@ -11,11 +11,14 @@ import {
 import { Image } from "../../../../../components/common/Image";
 import { ButtonAnt, Checkbox, TextArea } from "../../../../../components/form";
 import { spinLoader } from "../../../../../components/common/loader";
+import { useTranslation } from "../../../../../hooks";
 
 export const Feedback = (props) => {
   const router = useRouter();
 
   const { lobbyId, userId } = router.query;
+
+  const { t, SwitchTranslation } = useTranslation("feedback");
 
   const [lobby, setLobby] = useState(null);
   const [user, setUser] = useState(null);
@@ -31,6 +34,8 @@ export const Feedback = (props) => {
   }, []);
 
   useEffect(() => {
+    if (!lobbyId || !userId) return;
+
     const fetchUser = async (_lobby) => {
       const currentFirestore = gamesFirestore(_lobby?.game?.adminGame?.name);
 
@@ -115,23 +120,22 @@ export const Feedback = (props) => {
 
   return (
     <div className="bg-secondary w-full h-screen bg-center bg-contain bg-pattern">
-      <div className="bg-whiteDark h-[50px] flex items-center w-full shadow-[2px_0_4px_rgba(0,0,0,0.25)] mb-8">
+      <div className="bg-whiteDark h-[50px] flex items-center w-full shadow-[2px_0_4px_rgba(0,0,0,0.25)] mb-8 relative">
         <div className="no-wrap text-blackDarken text-[25px] leading-[30px] font-[700] text-center w-full">
           {lobby?.game?.name}
         </div>
+        <div className="absolute right-4 h-[50px] flex items-center">
+          <SwitchTranslation />
+        </div>
       </div>
       <div className="max-w-[550px] flex flex-col gap-4 mx-auto">
-        <div className="text-whiteDark font-[700] text-[30px] leading-[36px] text-center">Feedback</div>
-        <div className="text-whiteDark font-[400] text-[20px] leading-[24px] text-center p-2">
-          ¡Esperamos que la hayas pasado genial! ¡Déjanos tu opinión!
-        </div>
+        <div className="text-whiteDark font-[700] text-[30px] leading-[36px] text-center">{t("feedback")}</div>
+        <div className="text-whiteDark font-[400] text-[20px] leading-[24px] text-center p-2">{t("title")}</div>
         <div className="w-full p-4">
           <div className="w-full bg-whiteDark p-4 rounded-[4px]">
             <div className="bg-whiteLight p-2 rounded-[4px]">
-              <div className="text-grayLight text-[14px] leading-[17px] mb-4 font-[700]">¿Te divertiste?</div>
-              <div className="text-grayLight text-[14px] leading-[17px] mb-4 font-[400]">
-                Elige la emoción que más te identifique
-              </div>
+              <div className="text-grayLight text-[14px] leading-[17px] mb-4 font-[700]">{t("review-question")}</div>
+              <div className="text-grayLight text-[14px] leading-[17px] mb-4 font-[400]">{t("review-description")}</div>
               <div className="max-w-[90%] mx-auto py-4 flex items-center justify-between">
                 <Image
                   src={`${config.storageUrl}/resources/scores/score-0.svg`}
@@ -192,7 +196,7 @@ export const Feedback = (props) => {
             </div>
 
             <div className="bg-whiteLight p-2 rounded-[4px] flex items-center justify-between my-4">
-              <div className="text-grayLight text-[14px] leading-[17px] font-[700]">¿Jugaste sin problema?</div>
+              <div className="text-grayLight text-[14px] leading-[17px] font-[700]">{t("game-question")}</div>
               <div className="flex items-center gap-4">
                 <Checkbox checked={playWithoutProblem === "yes"} onChange={() => setPlayWithoutProblem("yes")}>
                   Si
@@ -205,7 +209,7 @@ export const Feedback = (props) => {
             </div>
 
             <div className="bg-whiteLight p-2 rounded-[4px] flex items-center justify-between my-4">
-              <div className="text-grayLight text-[14px] leading-[17px] font-[700]">¿Jugarías de nuevo?</div>
+              <div className="text-grayLight text-[14px] leading-[17px] font-[700]">{t("play-again-question")}</div>
               <div className="flex items-center gap-2">
                 <Checkbox checked={playAgain === "yes"} onChange={() => setPlayAgain("yes")}>
                   Si
@@ -222,7 +226,7 @@ export const Feedback = (props) => {
             </div>
 
             <div className="bg-whiteLight p-2 rounded-[4px] my-4">
-              <div className="text-grayLight text-[14px] leading-[17px] font-[700] mb-4">¿Tienes algún comentario?</div>
+              <div className="text-grayLight text-[14px] leading-[17px] font-[700] mb-4">{t("comment-question")}</div>
               <TextArea
                 rows="5"
                 border="none"
@@ -234,7 +238,7 @@ export const Feedback = (props) => {
                   setComment(e.target.value);
                 }}
                 value={comment}
-                placeholder="Escribe aquí"
+                placeholder={t("comment-placeholder")}
               />
             </div>
 
