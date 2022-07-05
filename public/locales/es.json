@@ -14,5 +14,15 @@
     "cant-find-room": "No encontramos tu sala, intenta nuevamente",
     "back": "Volver",
     "nickname": "Apodo"
+  },
+  "feedback": {
+    "title": "¡Esperamos que la hayas pasado genial! ¡Déjanos tu opinión!",
+    "feedback": "Feedback",
+    "review-question": "¿Te divertiste?",
+    "review-description": "Elige la emoción que más te identifique",
+    "game-question": "¿Jugaste sin problema?",
+    "play-again-question": "¿Jugarías de nuevo?",
+    "comment-question": "¿Tienes algún comentario?",
+    "comment-placeholder": "Dejanos tu comentario"
   }
 }
