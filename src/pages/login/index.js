@@ -104,6 +104,8 @@ const Login = (props) => {
         const lobby = lobbyRef.data();
 
         if (lobby?.isClosed) {
+          props.showNotification("UPS", "El juego esta cerrado");
+
           return setAuthUser({
             id: firestore.collection("users").doc().id,
             lobby: null,
@@ -122,8 +124,11 @@ const Login = (props) => {
 
         // If user has already logged then redirect.
         if (user_) {
+          await reserveLobbySeat(authUser.lobby.game.adminGame.name, authUser.lobby.id, user_.id, user_);
+
           await setAuthUser(user_);
           setAuthUserLs(user_);
+
           return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
         }
 

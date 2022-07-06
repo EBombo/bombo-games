@@ -26,8 +26,5 @@ export const fetchUserByEmail = async (email, lobby) => {
   // Prevent currentUser is undefined.
   if (!currentUser) return;
 
-  // Rollback hasExited.
-  await firebaseRef.doc(currentUser.id).update({ hasExited: false });
-
   return currentUser;
 };
