@@ -31,25 +31,18 @@ const Login = (props) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const reserveLobbySeat = async (gameName, lobbyId, userId, newUser) => {
-    try {
-      const fetchProps = {
-        url: `${config.serverUrl}/${gameName}/lobbies/${lobbyId}/seat`,
-        method: "PUT",
-      };
+  const reserveLobbySeat = async (domain, lobbyId, userId, newUser) => {
+    const fetchProps = {
+      url: `${domain}/api/lobbies/${lobbyId}/seat`,
+      method: "PUT",
+    };
 
-      const { error, response } = await Fetch(fetchProps.url, fetchProps.method, {
-        userId,
-        newUser,
-      });
+    const { error } = await Fetch(fetchProps.url, fetchProps.method, {
+      userId,
+      newUser,
+    });
 
-      if (error) throw new Error(error);
-
-      return response;
-    } catch (error) {
-      sendError(error, "reserveLobbySeat");
-      return error;
-    }
+    if (error) throw new Error(error);
   };
 
   const fetchLobby = async (pin, avatar = avatars[0]) => {
@@ -153,7 +146,7 @@ const Login = (props) => {
       };
 
       try {
-        await reserveLobbySeat(Fetch, authUser.lobby.id, userId, newUser);
+        await reserveLobbySeat(authUser.lobby.game.adminGame.domain, authUser.lobby.id, userId, newUser);
 
         // Update metrics.
         const promiseMetric = firestoreRef.doc(`games/${lobby.gameId}`).update({
