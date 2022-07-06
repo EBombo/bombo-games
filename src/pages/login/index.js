@@ -164,9 +164,9 @@ const Login = (props) => {
         // Redirect to lobby.
         await router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
       } catch (error) {
-        props.showNotification("Joining to lobby is not possible.", error?.message);
-
+        console.error(error);
         sendError(error, "initialize");
+        props.showNotification("Joining to lobby is not possible.", error?.message);
 
         return setAuthUser({
           id: authUser.id || firestore.collection("users").doc().id,
