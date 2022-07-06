@@ -86,66 +86,66 @@ const Login = (props) => {
 
     // Determine is necessary create a user.
     const initialize = async () => {
-      // Get game name.
-      const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
-
-      // Determine firestore ref.
-      const firestoreRef = gameName.includes(games.BINGO)
-        ? firestoreBingo
-        : gameName.includes(games.ROULETTE)
-        ? firestoreRoulette
-        : gameName.includes(games.TRIVIA)
-        ? firestoreTrivia
-        : null;
-
-      // Fetch lobby.
-      const lobbyRef = await firestoreRef.doc(`lobbies/${authUser.lobby.id}`).get();
-      const lobby = lobbyRef.data();
-
-      if (lobby?.isClosed) {
-        return setAuthUser({
-          id: firestore.collection("users").doc().id,
-          lobby: null,
-          isAdmin: false,
-          email: authUser.email,
-          nickname: authUser.nickname,
-        });
-      }
-
-      // AuthUser is admin.
-      if (authUser.lobby?.game?.usersIds?.includes(authUser.id))
-        return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
-
-      // Replace "newUser" if user has already logged in before with the same email.
-      const user_ = authUser?.email ? await fetchUserByEmail(authUser.email, authUser.lobby) : null;
-
-      // If user has already logged then redirect.
-      if (user_) {
-        await setAuthUser(user_);
-        setAuthUserLs(user_);
-        return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
-      }
-
-      if (!firestoreRef) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
-
-      const userId = authUser?.id ?? firestore.collection("users").doc().id;
-      const userCard = gameName === games.BINGO ? JSON.stringify(getBingoCard()) : null;
-
-      // Redirect to lobby (awaiting).
-      if (!lobby.isPlaying) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
-
-      let newUser = {
-        id: userId,
-        userId,
-        email: authUser?.email ?? null,
-        nickname: authUser.nickname,
-        avatar: authUser?.avatar ?? null,
-        card: userCard,
-        lobbyId: lobby.id,
-        lobby,
-      };
-
       try {
+        // Get game name.
+        const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
+
+        // Determine firestore ref.
+        const firestoreRef = gameName.includes(games.BINGO)
+          ? firestoreBingo
+          : gameName.includes(games.ROULETTE)
+          ? firestoreRoulette
+          : gameName.includes(games.TRIVIA)
+          ? firestoreTrivia
+          : null;
+
+        // Fetch lobby.
+        const lobbyRef = await firestoreRef.doc(`lobbies/${authUser.lobby.id}`).get();
+        const lobby = lobbyRef.data();
+
+        if (lobby?.isClosed) {
+          return setAuthUser({
+            id: firestore.collection("users").doc().id,
+            lobby: null,
+            isAdmin: false,
+            email: authUser.email,
+            nickname: authUser.nickname,
+          });
+        }
+
+        // AuthUser is admin.
+        if (authUser.lobby?.game?.usersIds?.includes(authUser.id))
+          return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+
+        // Replace "newUser" if user has already logged in before with the same email.
+        const user_ = authUser?.email ? await fetchUserByEmail(authUser.email, authUser.lobby) : null;
+
+        // If user has already logged then redirect.
+        if (user_) {
+          await setAuthUser(user_);
+          setAuthUserLs(user_);
+          return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+        }
+
+        if (!firestoreRef) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+
+        const userId = authUser?.id ?? firestore.collection("users").doc().id;
+        const userCard = gameName === games.BINGO ? JSON.stringify(getBingoCard()) : null;
+
+        // Redirect to lobby (awaiting).
+        if (!lobby.isPlaying) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+
+        let newUser = {
+          id: userId,
+          userId,
+          email: authUser?.email ?? null,
+          nickname: authUser.nickname,
+          avatar: authUser?.avatar ?? null,
+          card: userCard,
+          lobbyId: lobby.id,
+          lobby,
+        };
+
         await reserveLobbySeat(authUser.lobby.game.adminGame.name, authUser.lobby.id, userId, newUser);
 
         // Update metrics.
@@ -165,6 +165,8 @@ const Login = (props) => {
         await router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
       } catch (error) {
         props.showNotification("Joining to lobby is not possible.", error?.message);
+
+        sendError(error, "initialize");
 
         return setAuthUser({
           id: authUser.id || firestore.collection("users").doc().id,
