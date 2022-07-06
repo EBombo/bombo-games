@@ -149,7 +149,7 @@ const Login = (props) => {
         await reserveLobbySeat(authUser.lobby.game.adminGame.name, authUser.lobby.id, userId, newUser);
 
         // Update metrics.
-        const promiseMetric = firestoreRef.doc(`games/${lobby.gameId}`).update({
+        const promiseMetric = firestoreRef.doc(`games/${lobby?.game?.id}`).update({
           countPlayers: firebase.firestore.FieldValue.increment(1),
         });
 
