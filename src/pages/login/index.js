@@ -33,7 +33,7 @@ const Login = (props) => {
 
   const reserveLobbySeat = async (gameName, lobbyId, userId, newUser) => {
     const fetchProps = {
-      url: `${config.serverUrl}/${gameName}/api/lobbies/${lobbyId}/seat`,
+      url: `${config.serverUrl}/${gameName}/lobbies/${lobbyId}/seat`,
       method: "PUT",
     };
 
