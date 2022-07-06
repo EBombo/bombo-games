@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { firebase, firestoreEvents } from "../../../../../firebase";
 import { functionalErrorName } from "../../../../../components/common/DataList";
-import { transformSubscription, FREE_PLAN } from "../../../../../business";
-import { selectFirestoreFromLobby, AssignLobbyResponse, FunctionalError } from "./utils";
+import { FREE_PLAN, transformSubscription } from "../../../../../business";
+import { AssignLobbyResponse, FunctionalError, selectFirestoreFromLobby } from "./utils";
 
 export interface Lobby {
   isPlaying?: boolean;
@@ -33,6 +33,8 @@ export const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse
 
     const { users: maxNumberOfPlayers } = await fetchSubscriptionPlanFromLobby(lobby);
 
+    console.log("maxNumberOfPlayers", maxNumberOfPlayers);
+
     const wasUserAcceptedInLobby = await firestore_.runTransaction(async (transaction) => {
       const lobbySnapshot = await transaction.get(lobbyRef);
 
@@ -44,7 +46,7 @@ export const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse
       if (countPlayers >= maxNumberOfPlayers) return false;
 
       // If Lobby is playing then register user in collection.
-      if (isLobbyPlaying(lobby) && newUser !== null) {
+      if ((lobby?.isPlaying || !!lobby?.startAt) && newUser !== null) {
         const newUserRef = lobbyRef.collection("users").doc(userId);
 
         transaction.set(newUserRef, { ...newUser, hasExited: false }, { merge: true });
@@ -70,11 +72,10 @@ export const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse
   }
 };
 
-const isLobbyPlaying = (lobby: Lobby | undefined | null) => lobby?.isPlaying || !!lobby?.startAt;
-
 export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
   const companyId = lobby.game?.user?.companyId;
-  // If no companyId, then return FREE_PLAN.
+
+  /** If no companyId, then return FREE_PLAN. */
   if (!companyId) return FREE_PLAN;
 
   const customersQuerySnapshot = await firestoreEvents
@@ -83,6 +84,7 @@ export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
     .limit(1)
     .get();
 
+  /** If customer is empty, then return FREE_PLAN. */
   if (customersQuerySnapshot.empty) return FREE_PLAN;
 
   const customerId = customersQuerySnapshot.docs[0].id;
@@ -92,8 +94,10 @@ export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
     .collection(`customers/${customerId}/subscriptions`)
     .where("status", "==", "active")
     .orderBy("created", "desc")
+    .limit(1)
     .get();
 
+  /** If customer is empty, then return FREE_PLAN. */
   if (activeSubscriptionsQuery.empty) return FREE_PLAN;
 
   const activeSubscriptions = activeSubscriptionsQuery.docs.map((subscriptionDocSnapshot) => ({
@@ -103,7 +107,6 @@ export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
 
   const activeSubscription = activeSubscriptions[0];
 
-  const subscription = transformSubscription(activeSubscription);
-
-  return subscription;
+  /** TODO: Que se hace con esta transformacion?????  **/
+  return transformSubscription(activeSubscription);
 };
