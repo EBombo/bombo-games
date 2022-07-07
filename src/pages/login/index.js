@@ -123,6 +123,8 @@ const Login = (props) => {
         // Replace "newUser" if user has already logged in before with the same email.
         const user_ = authUser?.email ? await fetchUserByEmail(authUser.email, authUser.lobby) : null;
 
+        /**
+
         if (user_ && user_.id !== authUser.id) {
           await setAuthUser(user_);
           setAuthUserLs(user_);
@@ -135,6 +137,8 @@ const Login = (props) => {
 
         // If lobby is playing.
         if (!lobby?.isPlaying) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+
+         **/
 
         // If user has already logged then redirect.
         if (user_) {
