@@ -33,8 +33,6 @@ export const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse
 
     const maxNumberOfPlayers = await fetchSubscriptionPlanFromLobby(lobby);
 
-    console.log("maxNumberOfPlayers", maxNumberOfPlayers);
-
     const wasUserAcceptedInLobby = await firestore_.runTransaction(async (transaction) => {
       const lobbySnapshot = await transaction.get(lobbyRef);
 
