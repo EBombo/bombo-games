@@ -116,8 +116,9 @@ const Login = (props) => {
         }
 
         // AuthUser is admin.
-        if (authUser.lobby?.game?.usersIds?.includes(authUser.id))
+        if (authUser.lobby?.game?.usersIds?.includes(authUser.id)) {
           return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+        }
 
         // Replace "newUser" if user has already logged in before with the same email.
         const user_ = authUser?.email ? await fetchUserByEmail(authUser.email, authUser.lobby) : null;
@@ -132,13 +133,8 @@ const Login = (props) => {
           return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
         }
 
-        if (!firestoreRef) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
-
         const userId = authUser?.id ?? firestore.collection("users").doc().id;
         const userCard = gameName === games.BINGO ? JSON.stringify(getBingoCard()) : null;
-
-        // Redirect to lobby (awaiting).
-        if (!lobby.isPlaying) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
 
         let newUser = {
           id: userId,
