@@ -6,11 +6,13 @@ import { ButtonBingo, InputBingo } from "../../components/form";
 import { object, string } from "yup";
 import { useForm } from "react-hook-form";
 import { ModalVerification } from "./ModalVerification";
-import { useSendError, useUser } from "../../hooks";
+import { useSendError, useTranslation, useUser } from "../../hooks";
 import { fetchUserByEmail } from "./fetchUserByEmail";
 
 export const EmailStep = (props) => {
   const { sendError } = useSendError();
+
+  const { t } = useTranslation("login");
 
   const [, setAuthUserLs] = useUser();
 
@@ -43,7 +45,7 @@ export const EmailStep = (props) => {
 
       setEmail(data.email.toLowerCase());
     } catch (error) {
-      props.showNotification("UPS", "Algo salio mal, intentalo nuevamente", "error");
+      props.showNotification("UPS", t("something-went-wrong"), "error");
       await sendError(error, "emailVerification");
     }
     setLoading(true);
@@ -66,10 +68,8 @@ export const EmailStep = (props) => {
       <Image src={`${config.storageUrl}/resources/white-icon-ebombo.png`} width="180px" margin="10px auto" />
 
       <div className="login-container">
-        <div className="subtitle">Añadir identificación del jugador</div>
-        <div className="description">
-          El anfitrión del juego ha pedido que coloques tu mail cómo una medida de identificación para entrar al juego
-        </div>
+        <div className="subtitle">{t("add-player-id")}</div>
+        <div className="description">{t("the-host-of-the-game")}</div>
 
         <InputBingo
           ref={register}
@@ -81,7 +81,7 @@ export const EmailStep = (props) => {
           margin="10px auto"
           defaultValue={authUser?.email ?? null}
           disabled={props.isLoading}
-          placeholder="Ingresa tu email"
+          placeholder={t("enter-your-email")}
         />
 
         <ButtonBingo
@@ -90,7 +90,7 @@ export const EmailStep = (props) => {
           loading={props.isLoading || loading}
           htmlType="submit"
         >
-          Ingresar
+          {t("get-in")}
         </ButtonBingo>
       </div>
     </EmailForm>

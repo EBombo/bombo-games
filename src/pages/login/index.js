@@ -5,7 +5,7 @@ import { snapshotToArray } from "../../utils";
 import { EmailStep } from "./EmailStep";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-import { useSendError, useUser } from "../../hooks";
+import { useSendError, useTranslation, useUser } from "../../hooks";
 import { useFetch } from "../../hooks/useFetch";
 import { PinStep } from "./PinStep";
 import { avatars, games } from "../../components/common/DataList";
@@ -19,8 +19,11 @@ const Login = (props) => {
   const router = useRouter();
   const { pin } = router.query;
 
-  const { sendError } = useSendError();
   const { Fetch } = useFetch();
+
+  const { sendError } = useSendError();
+
+  const { t, SwitchTranslation } = useTranslation("login");
 
   const [, setAuthUserLs] = useUser();
 
@@ -29,24 +32,17 @@ const Login = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const reserveLobbySeat = async (gameName, lobbyId, userId, newUser) => {
-    try {
-      const fetchProps = {
-        url: `${config.serverUrl}/${gameName}/lobbies/${lobbyId}/seat`,
-        method: "PUT",
-      };
+    const fetchProps = {
+      url: `${config.serverUrl}/${gameName}/lobbies/${lobbyId}/seat`,
+      method: "PUT",
+    };
 
-      const { error, response } = await Fetch(fetchProps.url, fetchProps.method, {
-        userId,
-        newUser,
-      });
+    const { error } = await Fetch(fetchProps.url, fetchProps.method, {
+      userId,
+      newUser,
+    });
 
-      if (error) throw new Error(error);
-
-      return response;
-    } catch (error) {
-      sendError(error, "reserveLobbySeat");
-      return error;
-    }
+    if (error) throw new Error(error);
   };
 
   const fetchLobby = async (pin, avatar = avatars[0]) => {
@@ -54,11 +50,11 @@ const Login = (props) => {
       // Fetch lobby.
       const lobbyRef = await firestore.collection("lobbies").where("pin", "==", pin.toString()).limit(1).get();
 
-      if (lobbyRef.empty) throw Error("No encontramos tu sala, intenta nuevamente");
+      if (lobbyRef.empty) throw Error(t("cant-find-room"));
 
       const currentLobby = snapshotToArray(lobbyRef)[0];
 
-      if (currentLobby?.isLocked) throw Error("Este juego esta cerrado");
+      if (currentLobby?.isLocked) throw Error(t("game-is-closed"));
 
       if (currentLobby?.isClosed) {
         await setAuthUser({
@@ -69,7 +65,7 @@ const Login = (props) => {
           nickname: authUser.nickname,
         });
 
-        throw Error("Esta sala ha concluido");
+        throw Error(t("room-is-over"));
       }
 
       const isAdmin = !!currentLobby?.game?.usersIds?.includes(authUser.id);
@@ -90,70 +86,71 @@ const Login = (props) => {
 
     // Determine is necessary create a user.
     const initialize = async () => {
-      // Get game name.
-      const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
-
-      // Determine firestore ref.
-      const firestoreRef = gameName.includes(games.BINGO)
-        ? firestoreBingo
-        : gameName.includes(games.ROULETTE)
-        ? firestoreRoulette
-        : gameName.includes(games.TRIVIA)
-        ? firestoreTrivia
-        : null;
-
-      // Fetch lobby.
-      const lobbyRef = await firestoreRef.doc(`lobbies/${authUser.lobby.id}`).get();
-      const lobby = lobbyRef.data();
-
-      if (lobby?.isClosed) {
-        return setAuthUser({
-          id: firestore.collection("users").doc().id,
-          lobby: null,
-          isAdmin: false,
-          email: authUser.email,
-          nickname: authUser.nickname,
-        });
-      }
-
-      // AuthUser is admin.
-      if (authUser.lobby?.game?.usersIds?.includes(authUser.id))
-        return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
-
-      // Replace "newUser" if user has already logged in before with the same email.
-      const user_ = authUser?.email ? await fetchUserByEmail(authUser.email, authUser.lobby) : null;
-
-      // If user has already logged then redirect.
-      if (user_) {
-        await setAuthUser(user_);
-        setAuthUserLs(user_);
-        return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
-      }
-
-      if (!firestoreRef) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
-
-      const userId = authUser?.id ?? firestore.collection("users").doc().id;
-      const userCard = gameName === games.BINGO ? JSON.stringify(getBingoCard()) : null;
-
-      // Redirect to lobby (awaiting).
-      if (!lobby.isPlaying) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
-
-      let newUser = {
-        id: userId,
-        userId,
-        email: authUser?.email ?? null,
-        nickname: authUser.nickname,
-        avatar: authUser?.avatar ?? null,
-        card: userCard,
-        lobbyId: lobby.id,
-        lobby,
-      };
-
       try {
-        await reserveLobbySeat(Fetch, authUser.lobby.id, userId, newUser);
+        // Get game name.
+        const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
+
+        // Determine firestore ref.
+        const firestoreRef = gameName.includes(games.BINGO)
+          ? firestoreBingo
+          : gameName.includes(games.ROULETTE)
+          ? firestoreRoulette
+          : gameName.includes(games.TRIVIA)
+          ? firestoreTrivia
+          : null;
+
+        // Fetch lobby.
+        const lobbyRef = await firestoreRef.doc(`lobbies/${authUser.lobby.id}`).get();
+        const lobby = lobbyRef.data();
+
+        if (lobby?.isClosed) {
+          props.showNotification("UPS", "El juego esta cerrado");
+
+          return setAuthUser({
+            id: firestore.collection("users").doc().id,
+            lobby: null,
+            isAdmin: false,
+            email: authUser.email,
+            nickname: authUser.nickname,
+          });
+        }
+
+        // AuthUser is admin.
+        if (authUser.lobby?.game?.usersIds?.includes(authUser.id)) {
+          return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+        }
+
+        // Replace "newUser" if user has already logged in before with the same email.
+        const user_ = authUser?.email ? await fetchUserByEmail(authUser.email, authUser.lobby) : null;
+
+        // If user has already logged then redirect.
+        if (user_) {
+          await reserveLobbySeat(authUser.lobby.game.adminGame.name, authUser.lobby.id, user_.id, user_);
+
+          await setAuthUser(user_);
+          setAuthUserLs(user_);
+
+          return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+        }
+
+        const userId = authUser?.id ?? firestore.collection("users").doc().id;
+        const userCard = gameName === games.BINGO ? JSON.stringify(getBingoCard()) : null;
+
+        let newUser = {
+          id: userId,
+          userId,
+          email: authUser?.email ?? null,
+          nickname: authUser.nickname,
+          avatar: authUser?.avatar ?? null,
+          card: userCard,
+          lobbyId: lobby.id,
+          lobby,
+        };
+
+        await reserveLobbySeat(authUser.lobby.game.adminGame.name, authUser.lobby.id, userId, newUser);
 
         // Update metrics.
-        const promiseMetric = firestoreRef.doc(`games/${lobby.gameId}`).update({
+        const promiseMetric = firestoreRef.doc(`games/${lobby?.game?.id}`).update({
           countPlayers: firebase.firestore.FieldValue.increment(1),
         });
 
@@ -168,6 +165,8 @@ const Login = (props) => {
         // Redirect to lobby.
         await router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
       } catch (error) {
+        console.error(error);
+        sendError(error, "initialize");
         props.showNotification("Joining to lobby is not possible.", error?.message);
 
         return setAuthUser({
@@ -225,7 +224,7 @@ const Login = (props) => {
             });
           }}
         >
-          Volver
+          {t("back")}
         </Anchor>
       </div>
     ),
@@ -234,12 +233,16 @@ const Login = (props) => {
 
   return (
     <LoginContainer storageUrl={config.storageUrl}>
+      <div className="absolute top-4 right-4 lg:top-10 lg:right-10">
+        <SwitchTranslation />
+      </div>
+
       <div className="main-container">
         {!authUser?.lobby && (
           <>
             <PinStep isLoading={isLoading} setIsLoading={setIsLoading} fetchLobby={fetchLobby} {...props} />
 
-            {authUser?.email && authUser?.nickname && (
+            {(authUser?.email || authUser?.nickname) && (
               <div className="back">
                 <Tooltip title={`email: ${authUser.email} nickname: ${authUser.nickname}`} placement="bottom">
                   <Anchor
@@ -262,7 +265,7 @@ const Login = (props) => {
                       });
                     }}
                   >
-                    Remover email y nickname
+                    {t("remove-info")}
                   </Anchor>
                 </Tooltip>
               </div>

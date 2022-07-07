@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "reactn";
 import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
-import { object, string } from "yup";
 import {
   config,
   firestore,
@@ -13,11 +11,14 @@ import {
 import { Image } from "../../../../../components/common/Image";
 import { ButtonAnt, Checkbox, TextArea } from "../../../../../components/form";
 import { spinLoader } from "../../../../../components/common/loader";
+import { useTranslation } from "../../../../../hooks";
 
 export const Feedback = (props) => {
   const router = useRouter();
 
   const { lobbyId, userId } = router.query;
+
+  const { t, SwitchTranslation } = useTranslation("feedback");
 
   const [lobby, setLobby] = useState(null);
   const [user, setUser] = useState(null);
@@ -26,12 +27,15 @@ export const Feedback = (props) => {
   const [playWithoutProblem, setPlayWithoutProblem] = useState(null);
   const [playAgain, setPlayAgain] = useState(null);
   const [savingFeedback, setSavingFeedback] = useState(false);
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
     router.prefetch("/");
   }, []);
 
   useEffect(() => {
+    if (!lobbyId || !userId) return;
+
     const fetchUser = async (_lobby) => {
       const currentFirestore = gamesFirestore(_lobby?.game?.adminGame?.name);
 
@@ -56,15 +60,6 @@ export const Feedback = (props) => {
     fetchLobby();
   }, [lobbyId, userId]);
 
-  const validationSchema = object().shape({
-    comment: string().required(),
-  });
-
-  const { register, errors, handleSubmit, reset } = useForm({
-    validationSchema,
-    reValidateMode: "onSubmit",
-  });
-
   const gamesFirestore = (name) => {
     switch (name) {
       case "bingo":
@@ -82,7 +77,7 @@ export const Feedback = (props) => {
     }
   };
 
-  const saveFeedback = async (data) => {
+  const saveFeedback = async () => {
     if (!reviewScore || !playWithoutProblem || !playAgain)
       return props.showNotification("Error", "Complete todos los campos!");
 
@@ -98,9 +93,9 @@ export const Feedback = (props) => {
       .set(
         {
           reviewScore,
-          playWithoutProblem,
+          playWithoutProblem: playWithoutProblem === "yes" ? true : false,
           playAgain,
-          comment: data.comment,
+          comment,
           lobbyId,
           user: JSON.stringify(user),
           createAt: new Date(),
@@ -110,8 +105,8 @@ export const Feedback = (props) => {
 
     props.showNotification("OK", "Muchas gracias por el feedback!", "success");
 
-    await reset();
     setReviewScore(null);
+    setComment("");
     setPlayWithoutProblem(null);
     setPlayAgain(null);
 
@@ -125,23 +120,22 @@ export const Feedback = (props) => {
 
   return (
     <div className="bg-secondary w-full h-screen bg-center bg-contain bg-pattern">
-      <div className="bg-whiteDark h-[50px] flex items-center w-full shadow-[2px_0_4px_rgba(0,0,0,0.25)] mb-8">
+      <div className="bg-whiteDark h-[50px] flex items-center w-full shadow-[2px_0_4px_rgba(0,0,0,0.25)] mb-8 relative">
         <div className="no-wrap text-blackDarken text-[25px] leading-[30px] font-[700] text-center w-full">
           {lobby?.game?.name}
         </div>
+        <div className="absolute right-4 h-[50px] flex items-center">
+          <SwitchTranslation />
+        </div>
       </div>
       <div className="max-w-[550px] flex flex-col gap-4 mx-auto">
-        <div className="text-whiteDark font-[700] text-[30px] leading-[36px] text-center">Feedback</div>
-        <div className="text-whiteDark font-[400] text-[20px] leading-[24px] text-center p-2">
-          ¡Esperamos que la hayas pasado genial! ¡Déjanos tu opinión!
-        </div>
+        <div className="text-whiteDark font-[700] text-[30px] leading-[36px] text-center">{t("feedback")}</div>
+        <div className="text-whiteDark font-[400] text-[20px] leading-[24px] text-center p-2">{t("title")}</div>
         <div className="w-full p-4">
-          <form onSubmit={handleSubmit(saveFeedback)} className="w-full bg-whiteDark p-4 rounded-[4px]">
+          <div className="w-full bg-whiteDark p-4 rounded-[4px]">
             <div className="bg-whiteLight p-2 rounded-[4px]">
-              <div className="text-grayLight text-[14px] leading-[17px] mb-4 font-[700]">¿Te divertiste?</div>
-              <div className="text-grayLight text-[14px] leading-[17px] mb-4 font-[400]">
-                Elige la emoción que más te identifique
-              </div>
+              <div className="text-grayLight text-[14px] leading-[17px] mb-4 font-[700]">{t("review-question")}</div>
+              <div className="text-grayLight text-[14px] leading-[17px] mb-4 font-[400]">{t("review-description")}</div>
               <div className="max-w-[90%] mx-auto py-4 flex items-center justify-between">
                 <Image
                   src={`${config.storageUrl}/resources/scores/score-0.svg`}
@@ -202,20 +196,20 @@ export const Feedback = (props) => {
             </div>
 
             <div className="bg-whiteLight p-2 rounded-[4px] flex items-center justify-between my-4">
-              <div className="text-grayLight text-[14px] leading-[17px] font-[700]">¿Jugaste sin problema?</div>
+              <div className="text-grayLight text-[14px] leading-[17px] font-[700]">{t("game-question")}</div>
               <div className="flex items-center gap-4">
-                <Checkbox checked={playWithoutProblem} onChange={() => setPlayWithoutProblem(true)}>
+                <Checkbox checked={playWithoutProblem === "yes"} onChange={() => setPlayWithoutProblem("yes")}>
                   Si
                 </Checkbox>
 
-                <Checkbox checked={playWithoutProblem === false} onChange={() => setPlayWithoutProblem(false)}>
+                <Checkbox checked={playWithoutProblem === "no"} onChange={() => setPlayWithoutProblem("no")}>
                   No
                 </Checkbox>
               </div>
             </div>
 
             <div className="bg-whiteLight p-2 rounded-[4px] flex items-center justify-between my-4">
-              <div className="text-grayLight text-[14px] leading-[17px] font-[700]">¿Jugarías de nuevo?</div>
+              <div className="text-grayLight text-[14px] leading-[17px] font-[700]">{t("play-again-question")}</div>
               <div className="flex items-center gap-2">
                 <Checkbox checked={playAgain === "yes"} onChange={() => setPlayAgain("yes")}>
                   Si
@@ -232,23 +226,31 @@ export const Feedback = (props) => {
             </div>
 
             <div className="bg-whiteLight p-2 rounded-[4px] my-4">
-              <div className="text-grayLight text-[14px] leading-[17px] font-[700] mb-4">¿Tienes algún comentario?</div>
+              <div className="text-grayLight text-[14px] leading-[17px] font-[700] mb-4">{t("comment-question")}</div>
               <TextArea
                 rows="5"
                 border="none"
                 background="#F2F2F2"
                 color="#242424"
                 name="comment"
-                ref={register}
-                error={errors.comment}
-                placeholder="Escribe aquí"
+                onChange={(e) => {
+                  e.preventDefault();
+                  setComment(e.target.value);
+                }}
+                value={comment}
+                placeholder={t("comment-placeholder")}
               />
             </div>
 
-            <ButtonAnt color="success" htmlType="submit" loading={savingFeedback} disabled={savingFeedback}>
+            <ButtonAnt
+              color="success"
+              onClick={() => saveFeedback()}
+              loading={savingFeedback}
+              disabled={savingFeedback}
+            >
               Enviar
             </ButtonAnt>
-          </form>
+          </div>
         </div>
       </div>
     </div>

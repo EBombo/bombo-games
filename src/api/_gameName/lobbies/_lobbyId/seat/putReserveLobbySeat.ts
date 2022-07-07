@@ -1,25 +1,82 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Mutex } from "async-mutex";
-import {
-  firebase,
-  firestoreEvents,
-} from "../../../../../firebase";
+import { firebase, firestoreEvents } from "../../../../../firebase";
 import { functionalErrorName } from "../../../../../components/common/DataList";
-import { transformSubscription, FREE_PLAN } from "../../../../../business";
-import { selectFirestoreFromLobby, AssignLobbyResponse } from "./utils";
+import { FREE_PLAN, transformSubscription } from "../../../../../business";
+import { AssignLobbyResponse, FunctionalError, selectFirestoreFromLobby } from "./utils";
 
 export interface Lobby {
   isPlaying?: boolean;
   startAt?: any;
+  countPlayers?: number;
 }
 
-const mutex = new Mutex();
+export const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const { lobbyId, gameName } = req.query as { [key: string]: string };
+    const { userId, newUser } = req.body;
 
-const isLobbyPlaying = (lobby : Lobby | undefined | null) => (lobby?.isPlaying || !!lobby?.startAt);
+    console.info(`>>>> Request params: lobbyId ${lobbyId}, gameName ${gameName}`);
+    console.info("users->",userId, newUser);
+
+    const firestore_ = selectFirestoreFromLobby(gameName);
+
+    if (!firestore_) throw new Error("Selected Game Database is null/undefined.");
+
+    // FetchLobby from game's Firestore to update data.
+    const lobbySnapshot = await firestore_.doc(`lobbies/${lobbyId}`).get();
+
+    const lobbyRef = lobbySnapshot.ref;
+    const lobby = lobbySnapshot.data();
+
+    if (lobby?.isLocked) {
+      throw new FunctionalError("Lobby is Locked. No one can join at this moment.");
+    }
+
+    const { users: maxNumberOfPlayers } = await fetchSubscriptionPlanFromLobby(lobby);
+
+    console.log("maxNumberOfPlayers", maxNumberOfPlayers);
+
+    const wasUserAcceptedInLobby = await firestore_.runTransaction(async (transaction) => {
+      const lobbySnapshot = await transaction.get(lobbyRef);
+
+      const lobby = lobbySnapshot.data() as Lobby;
+
+      const countPlayers = lobby.countPlayers || 0;
+
+      // Check lobby room size.
+      if (countPlayers >= maxNumberOfPlayers) return false;
+
+      // If Lobby is playing then register user in collection.
+      if ((lobby?.isPlaying || !!lobby?.startAt) && newUser !== null) {
+        const newUserRef = lobbyRef.collection("users").doc(userId);
+
+        transaction.set(newUserRef, { ...newUser, hasExited: false }, { merge: true });
+      }
+
+      // Increment counter.
+      transaction.update(lobbyRef, { countPlayers: firebase.firestore.FieldValue.increment(1) });
+
+      return true;
+    });
+
+    if (!wasUserAcceptedInLobby) {
+      throw new FunctionalError("Lobby room is full. User cannot join to lobby");
+    }
+
+    return res.send(<AssignLobbyResponse>{ success: true, lobby });
+  } catch (error: any) {
+    console.error("Error on reserveLobbySeat:", error);
+
+    if (error?.name === functionalErrorName) return res.status(409).send({ success: false, error: error?.message });
+
+    return res.status(500).send(<AssignLobbyResponse>{ success: false, error: "Something went wrong" });
+  }
+};
 
 export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
   const companyId = lobby.game?.user?.companyId;
-  // If no companyId, then return FREE_PLAN.
+
+  /** If no companyId, then return FREE_PLAN. */
   if (!companyId) return FREE_PLAN;
 
   const customersQuerySnapshot = await firestoreEvents
@@ -28,6 +85,7 @@ export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
     .limit(1)
     .get();
 
+  /** If customer is empty, then return FREE_PLAN. */
   if (customersQuerySnapshot.empty) return FREE_PLAN;
 
   const customerId = customersQuerySnapshot.docs[0].id;
@@ -37,8 +95,10 @@ export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
     .collection(`customers/${customerId}/subscriptions`)
     .where("status", "==", "active")
     .orderBy("created", "desc")
+    .limit(1)
     .get();
 
+  /** If customer is empty, then return FREE_PLAN. */
   if (activeSubscriptionsQuery.empty) return FREE_PLAN;
 
   const activeSubscriptions = activeSubscriptionsQuery.docs.map((subscriptionDocSnapshot) => ({
@@ -48,93 +108,6 @@ export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
 
   const activeSubscription = activeSubscriptions[0];
 
-  const subscription = transformSubscription(activeSubscription);
-
-  return subscription;
-};
-
-// AssignLobbySeat checks if can give seat in lobby to user
-export const assignLobbySeat = async (
-  gameName: string,
-  lobbyId: string,
-  userId: string,
-  newUser: any
-): Promise<AssignLobbyResponse> => {
-  const firestore_ = selectFirestoreFromLobby(gameName);
-
-  if (!firestore_) throw new Error("Selected Game Database is null/undefined.");
-
-  // FetchLobby from game's Firestore to update data.
-  const lobbySnapshot = await firestore_.doc(`lobbies/${lobbyId}`).get();
-
-  const lobby = lobbySnapshot.data();
-
-  if (lobby?.isLocked) {
-    const error = new Error("Lobby is Locked. No one can join at this moment.");
-    error.name = functionalErrorName;
-    console.error("Error on assignLobbySeat:", error.message);
-    throw error;
-  }
-
-  const subscription = await fetchSubscriptionPlanFromLobby(lobby);
-
-  if (lobby?.countPlayers >= subscription.users) {
-    const error = new Error("Lobby room is full. User cannot join to lobby");
-    error.name = functionalErrorName;
-    console.error("Error on assignLobbySeat:", error.message);
-    throw error;
-  }
-
-  const optionalPromiseTasks = [];
-
-  // Lobby room can add this user.
-  // Register user in lobby.
-  if (isLobbyPlaying(lobby) && newUser !== null)
-    optionalPromiseTasks.push(
-      firestore_.collection("lobbies").doc(lobbyId).collection("users").doc(userId).set({ ...newUser, hasExited: false }, { merge: true })
-    );
-
-  // Increase counter players.
-  optionalPromiseTasks.push(
-    firestore_.doc(`lobbies/${lobbyId}`).update({
-      countPlayers: firebase.firestore.FieldValue.increment(1),
-    })
-  );
-
-  await Promise.all([...optionalPromiseTasks]);
-
-  return { success: true, lobby: lobby };
-};
-
-// ReserveLobbySeatSynced runs lobby seat assignation with mutex.
-export const reserveLobbySeatSynced = async (
-  gameName: string,
-  lobbyId: string,
-  userId: string,
-  newUser: any
-): Promise<AssignLobbyResponse> => {
-  return await mutex.runExclusive(async () => {
-    const result = await assignLobbySeat(gameName, lobbyId, userId, newUser);
-
-    return result;
-  });
-};
-
-export const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse) => {
-  try {
-    const { lobbyId, gameName } = req.query as { [key: string]: string };
-    const { userId, newUser } = req.body;
-
-    console.info(`>>>> Request params: lobbyId ${lobbyId}, gameName ${gameName}`);
-
-    const response = await reserveLobbySeatSynced(gameName, lobbyId, userId, newUser);
-
-    return res.send(response);
-  } catch (error: any) {
-    console.error("Error on reserveLobbySeat:", error);
-
-    if (error?.name === functionalErrorName) return res.status(409).send({ success: false, error: error?.message });
-
-    return res.status(500).send({ success: false, error: "Something went wrong" });
-  }
+  /** TODO: Que se hace con esta transformacion?????  **/
+  return transformSubscription(activeSubscription);
 };
