@@ -1,16 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Mutex } from "async-mutex";
-import {
-  firestore,
-  firebase,
-  firestoreEvents,
-  firestoreBingo,
-  firestoreHanged,
-  firestoreTrivia,
-  firestoreRoulette,
-} from "../../../../../firebase";
-import { functionalErrorName, games } from "../../../../../components/common/DataList";
-import { transformSubscription, FREE_PLAN } from "../../../../../business";
+import { firebase } from "../../../../../firebase";
+import { functionalErrorName } from "../../../../../components/common/DataList";
 import { selectFirestoreFromLobby, AssignLobbyResponse } from "./utils";
 
 // FreeLobbySeat frees a seat in lobby. Reduces users counter.
