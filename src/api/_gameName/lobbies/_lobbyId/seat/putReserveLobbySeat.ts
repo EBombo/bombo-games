@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { firebase, firestoreEvents } from "../../../../../firebase";
 import { functionalErrorName } from "../../../../../components/common/DataList";
-import { FREE_PLAN, transformSubscription } from "../../../../../business";
+import { FREE_PLAN, getMaxUsersAllowedFromSubscription } from "../../../../../business";
 import { AssignLobbyResponse, FunctionalError, selectFirestoreFromLobby } from "./utils";
 
 export interface Lobby {
@@ -31,7 +31,7 @@ export const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse
       throw new FunctionalError("Lobby is Locked. No one can join at this moment.");
     }
 
-    const { users: maxNumberOfPlayers } = await fetchSubscriptionPlanFromLobby(lobby);
+    const maxNumberOfPlayers = await fetchSubscriptionPlanFromLobby(lobby);
 
     console.log("maxNumberOfPlayers", maxNumberOfPlayers);
 
@@ -72,11 +72,11 @@ export const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse
   }
 };
 
-export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
+export const fetchSubscriptionPlanFromLobby = async (lobby: any) : Promise<number> => {
   const companyId = lobby.game?.user?.companyId;
 
   /** If no companyId, then return FREE_PLAN. */
-  if (!companyId) return FREE_PLAN;
+  if (!companyId) return FREE_PLAN.users;
 
   const customersQuerySnapshot = await firestoreEvents
     .collection("customers")
@@ -85,7 +85,7 @@ export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
     .get();
 
   /** If customer is empty, then return FREE_PLAN. */
-  if (customersQuerySnapshot.empty) return FREE_PLAN;
+  if (customersQuerySnapshot.empty) return FREE_PLAN.users;
 
   const customerId = customersQuerySnapshot.docs[0].id;
 
@@ -98,7 +98,7 @@ export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
     .get();
 
   /** If customer is empty, then return FREE_PLAN. */
-  if (activeSubscriptionsQuery.empty) return FREE_PLAN;
+  if (activeSubscriptionsQuery.empty) return FREE_PLAN.users;
 
   const activeSubscriptions = activeSubscriptionsQuery.docs.map((subscriptionDocSnapshot) => ({
     id: subscriptionDocSnapshot.id,
@@ -107,6 +107,5 @@ export const fetchSubscriptionPlanFromLobby = async (lobby: any) => {
 
   const activeSubscription = activeSubscriptions[0];
 
-  /** TODO: Que se hace con esta transformacion?????  **/
-  return transformSubscription(activeSubscription);
+  return getMaxUsersAllowedFromSubscription(activeSubscription);
 };
