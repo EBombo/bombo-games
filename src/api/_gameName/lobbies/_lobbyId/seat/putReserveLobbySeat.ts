@@ -16,6 +16,7 @@ export const reserveLobbySeat = async (req: NextApiRequest, res: NextApiResponse
     const { userId, newUser } = req.body;
 
     console.info(`>>>> Request params: lobbyId ${lobbyId}, gameName ${gameName}`);
+    console.info("users->",userId, newUser);
 
     const firestore_ = selectFirestoreFromLobby(gameName);
 
