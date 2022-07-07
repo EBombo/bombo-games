@@ -123,6 +123,13 @@ const Login = (props) => {
         // Replace "newUser" if user has already logged in before with the same email.
         const user_ = authUser?.email ? await fetchUserByEmail(authUser.email, authUser.lobby) : null;
 
+        if (user_ && user_.id !== authUser.id) {
+          await setAuthUser(user_);
+          setAuthUserLs(user_);
+
+          return;
+        }
+
         // If user has already logged then redirect.
         if (user_) {
           await reserveLobbySeat(authUser.lobby.game.adminGame.name, authUser.lobby.id, user_.id, user_);
