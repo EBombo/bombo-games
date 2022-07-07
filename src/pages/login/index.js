@@ -130,6 +130,12 @@ const Login = (props) => {
           return;
         }
 
+        // If lobby is awaiting for players then redirect to lobby.
+        if (!!lobby?.startAt) return router.push(`/roulette/lobbies/${authUser.lobby.id}`);
+
+        // If lobby is playing.
+        if (lobby?.isPlaying) return router.push(`/roulette/lobbies/${authUser.lobby.id}`);
+
         // If user has already logged then redirect.
         if (user_) {
           await reserveLobbySeat(authUser.lobby.game.adminGame.name, authUser.lobby.id, user_.id, user_);
