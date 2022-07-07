@@ -86,6 +86,7 @@ const Login = (props) => {
 
     // Determine is necessary create a user.
     const initialize = async () => {
+      console.log("initialize")
       try {
         // Get game name.
         const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
