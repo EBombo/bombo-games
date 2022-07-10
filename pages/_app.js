@@ -13,6 +13,7 @@ import { snapshotToArray } from "../src/utils";
 import Head from "next/head";
 import "../src/theme/globals.css";
 import Script from "next/script";
+import { WithAuthLobby } from "../src/session/WithAuthLobby";
 
 const MyApp = ({ Component, pageProps }) => {
   const [authUserLS] = useUser();
@@ -80,7 +81,9 @@ const MyApp = ({ Component, pageProps }) => {
       />
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <WithConfiguration>
-          <Component {...pageProps} showNotification={showNotificationAnt} />
+          <WithAuthLobby>
+            <Component {...pageProps} showNotification={showNotificationAnt} />
+          </WithAuthLobby>
         </WithConfiguration>
       </ErrorBoundary>
     </ThemeProvider>
