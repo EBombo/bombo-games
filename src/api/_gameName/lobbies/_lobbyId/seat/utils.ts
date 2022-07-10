@@ -1,12 +1,12 @@
-import { firestoreBingo, firestoreHanged, firestoreTrivia, firestoreRoulette } from "../../../../../firebase";
+import { firestoreBingo, firestoreHanged, firestoreRoulette, firestoreTrivia } from "../../../../../firebase";
 import { functionalErrorName, games } from "../../../../../components/common/DataList";
 
 export const selectFirestoreFromLobby = (gameName: string) => {
-  const gameName_ = gameName.toLowerCase();
+  const gameNameFormatted = gameName.toLowerCase();
 
   let selectedFirestore;
 
-  switch (gameName_) {
+  switch (gameNameFormatted) {
     case games.BINGO:
       selectedFirestore = firestoreBingo;
       break;
