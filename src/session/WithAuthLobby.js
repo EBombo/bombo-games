@@ -19,7 +19,7 @@ export const WithAuthLobby = (props) => {
 
   const [authUser, setAuthUser] = useGlobal("user");
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Redirect to lobby.
   useEffect(() => {
