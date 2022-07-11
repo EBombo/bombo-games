@@ -81,7 +81,7 @@ const MyApp = ({ Component, pageProps }) => {
       />
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <WithConfiguration>
-          <WithAuthLobby>
+          <WithAuthLobby showNotification={showNotificationAnt}>
             <Component {...pageProps} showNotification={showNotificationAnt} />
           </WithAuthLobby>
         </WithConfiguration>
