@@ -23,10 +23,10 @@ export const WithAuthLobby = (props) => {
 
   // Redirect to lobby.
   useEffect(() => {
-    if (!authUser?.lobby) return;
-    if (authUser?.isAdmin) return;
-    if (!authUser?.nickname) return;
-    if (authUser?.lobby?.settings?.userIdentity && !authUser?.email) return;
+    if (!authUser?.lobby) return setIsLoading(false);
+    if (authUser?.isAdmin) return setIsLoading(false);
+    if (!authUser?.nickname) return setIsLoading(false);
+    if (authUser?.lobby?.settings?.userIdentity && !authUser?.email) return setIsLoading(false);
 
     const reserveLobbySeat = async (gameName, lobbyId, userId, newUser) => {
       const fetchProps = {
@@ -66,13 +66,15 @@ export const WithAuthLobby = (props) => {
         if (lobby?.isClosed) {
           props.showNotification("UPS", "El juego esta cerrado");
 
-          return setAuthUser({
+          setAuthUser({
             id: firestore.collection("users").doc().id,
             lobby: null,
             isAdmin: false,
             email: authUser.email,
             nickname: authUser.nickname,
           });
+
+          return setIsLoading(false);
         }
 
         // AuthUser is admin.

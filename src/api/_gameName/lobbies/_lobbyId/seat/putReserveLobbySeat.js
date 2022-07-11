@@ -51,7 +51,7 @@ export const reserveLobbySeat = async (req, res) => {
       /** Si el juego ya empezo, debe registrar el usuario  directamente a la colleccion users. **/
       if (!lobby?.isPlaying) return true;
       /** Si el juego esta en la pagina de LOADING de carga del juego, debe registrar el usuario  directamente a la colleccion users. **/
-      if (lobby?.startAt !== null) return true;
+      if (lobby?.startAt === null) return true;
 
       // If Lobby is playing then register user in collection.
       const newUserRef = lobbyRef.collection("users").doc(userId);
