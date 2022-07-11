@@ -1,4 +1,4 @@
-import { useEffect, useGlobal } from "reactn";
+import { useEffect, useGlobal, useState } from "reactn";
 import { games } from "../components/common/DataList";
 import { config, firestore, firestoreBingo, firestoreRoulette, firestoreTrivia } from "../firebase";
 import { fetchUserByEmail } from "../pages/login/fetchUserByEmail";
@@ -6,6 +6,7 @@ import { getBingoCard } from "../constants/bingoCards";
 import { useRouter } from "next/router";
 import { useSendError, useUser } from "../hooks";
 import { useFetch } from "../hooks/useFetch";
+import { spinLoader } from "../components/common/loader";
 
 export const WithAuthLobby = (props) => {
   const router = useRouter();
@@ -17,6 +18,8 @@ export const WithAuthLobby = (props) => {
   const [, setAuthUserLs] = useUser();
 
   const [authUser, setAuthUser] = useGlobal("user");
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // Redirect to lobby.
   useEffect(() => {
@@ -42,6 +45,7 @@ export const WithAuthLobby = (props) => {
 
     // Determine is necessary create a user.
     const initialize = async () => {
+      setIsLoading(true);
       try {
         // Get game name.
         const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
@@ -135,10 +139,13 @@ export const WithAuthLobby = (props) => {
           nickname: authUser.nickname,
         });
       }
+      setIsLoading(false);
     };
 
     initialize();
   }, [authUser.id, authUser?.lobby?.id, authUser?.nickname, authUser?.email]);
+
+  if (isLoading) return spinLoader();
 
   return props.children;
 };
