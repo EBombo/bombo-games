@@ -3,8 +3,6 @@ import { games } from "../components/common/DataList";
 import { config, firestore, firestoreBingo, firestoreRoulette, firestoreTrivia } from "../firebase";
 import { fetchUserByEmail } from "../pages/login/fetchUserByEmail";
 import { getBingoCard } from "../constants/bingoCards";
-import { firebase } from "../firebase/config";
-import { saveMembers } from "../constants/saveMembers";
 import { useRouter } from "next/router";
 import { useSendError, useUser } from "../hooks";
 import { useFetch } from "../hooks/useFetch";
@@ -36,6 +34,7 @@ export const WithAuthLobby = (props) => {
       const { error } = await Fetch(fetchProps.url, fetchProps.method, {
         userId,
         newUser,
+        isValidate: true,
       });
 
       if (error) throw new Error(error);
@@ -106,6 +105,7 @@ export const WithAuthLobby = (props) => {
 
         await reserveLobbySeat(authUser.lobby.game.adminGame.name, authUser.lobby.id, userId, newUser);
 
+        /**
         // Update metrics.
         const promiseMetric = firestoreRef.doc(`games/${lobby?.game?.id}`).update({
           countPlayers: firebase.firestore.FieldValue.increment(1),
@@ -115,6 +115,7 @@ export const WithAuthLobby = (props) => {
         const promiseMember = saveMembers(authUser.lobby, [newUser]);
 
         await Promise.all([promiseMetric, promiseMember]);
+        **/
 
         await setAuthUser(newUser);
         setAuthUserLs(newUser);

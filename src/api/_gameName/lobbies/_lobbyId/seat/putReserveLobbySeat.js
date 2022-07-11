@@ -6,7 +6,7 @@ import { FunctionalError, selectFirestoreFromLobby } from "./utils";
 export const reserveLobbySeat = async (req, res) => {
   try {
     const { lobbyId, gameName } = req.query;
-    const { userId, newUser } = req.body;
+    const { userId, newUser, isValidate } = req.body;
 
     console.info("reserveLobbySeat", lobbyId, gameName, userId, newUser);
 
@@ -40,6 +40,9 @@ export const reserveLobbySeat = async (req, res) => {
 
       /** Check lobby room size. **/
       if (countPlayers >= limitUsersBySubscription) return false;
+
+      /** It is used as query. **/
+      if (isValidate) return countPlayers < limitUsersBySubscription;
 
       // Increment total users.
       transaction.update(lobbyRef, { countPlayers: firebase.firestore.FieldValue.increment(1) });
