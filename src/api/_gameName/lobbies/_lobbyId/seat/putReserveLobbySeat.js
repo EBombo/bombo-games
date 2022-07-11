@@ -126,4 +126,5 @@ const fetchSubscriptionPlan = async (customerId) => {
   return activeSubscriptions[0];
 };
 
-const getLimitUsers = (subscription) => parseInt(subscription.items?.[0].price?.product?.metadata?.["users"] ?? 0);
+const getLimitUsers = (subscription) =>
+  parseInt(subscription.items?.[0].price?.product?.metadata?.["users"] ?? subscription?.users);
