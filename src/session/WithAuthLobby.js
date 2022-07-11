@@ -40,7 +40,7 @@ export const WithAuthLobby = (props) => {
         isValidate: true,
       });
 
-      if (error) throw new Error(error);
+      if (error) throw new Error(error?.message ?? "Something went wrong");
     };
 
     // Determine is necessary create a user.
@@ -131,7 +131,7 @@ export const WithAuthLobby = (props) => {
         sendError(error, "initialize");
         props.showNotification("Joining to lobby is not possible.", error?.message);
 
-        return setAuthUser({
+        await setAuthUser({
           id: authUser.id || firestore.collection("users").doc().id,
           lobby: null,
           isAdmin: false,
