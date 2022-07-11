@@ -37,7 +37,7 @@ export const WithAuthLobby = (props) => {
       const { error } = await Fetch(fetchProps.url, fetchProps.method, {
         userId,
         newUser,
-        isValidate: true,
+        //isValidate: true,
       });
 
       if (error) throw new Error(error?.message ?? "Something went wrong");
