@@ -69,10 +69,10 @@ export const reserveLobbySeat = async (req, res) => {
     console.error("Error on reserveLobbySeat:", error);
 
     if (error?.name === functionalErrorName) {
-      return res.status(409).send({ success: false, error: error?.message });
+      return res.status(409).send({ success: false, message: error?.message });
     }
 
-    return res.status(500).send({ success: false, error: "Something went wrong" });
+    return res.status(500).send({ success: false, message: "Something went wrong" });
   }
 };
 
