@@ -66,7 +66,7 @@ export const WithAuthLobby = (props) => {
         if (lobby?.isClosed) {
           props.showNotification("UPS", "El juego esta cerrado");
 
-          setAuthUser({
+          await setAuthUser({
             id: firestore.collection("users").doc().id,
             lobby: null,
             isAdmin: false,
