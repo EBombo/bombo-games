@@ -26,7 +26,6 @@ export const reserveLobbySeat = async (req, res) => {
 
     const activeSubscription = await fetchSubscriptionPlan(customerId);
 
-    console.log("activeSubscription", activeSubscription);
     const limitUsersBySubscription = getLimitUsers(activeSubscription);
 
     console.log("limitUsersBySubscription", limitUsersBySubscription);
@@ -100,8 +99,6 @@ const fetchCustomerId = async (lobby) => {
   /** If customer is empty, then return FREE_PLAN. */
   if (customersQuerySnapshot.empty) return FREE_PLAN;
 
-  console.log("customersQuerySnapshot.docs", customersQuerySnapshot.docs.length);
-
   return customersQuerySnapshot.docs[0].id;
 };
 
@@ -126,8 +123,7 @@ const fetchSubscriptionPlan = async (customerId) => {
     ...subscriptionDocSnapshot.data(),
   }));
 
-  console.log("activeSubscriptions", activeSubscriptions.length);
   return activeSubscriptions[0];
 };
 
-const getLimitUsers = (subscription) => parseInt(subscription.items[0].price?.product?.metadata?.["users"] ?? 0);
+const getLimitUsers = (subscription) => parseInt(subscription.items?.[0].price?.product?.metadata?.["users"] ?? 0);
