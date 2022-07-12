@@ -38,11 +38,11 @@ module.exports = withBundleAnalyzer({
       {
         source: "/bingo/:path*",
         destination: "https://bingo.ebombo.io/bingo/:path*",
-      },
+      } /*
       {
         source: "/en/bingo/:path*",
         destination: "https://bingo-red.ebombo.io/en/bingo/:path*",
-      },
+      },*/,
       {
         source: "/hanged/:path*",
         destination: "https://hanged.ebombo.io/hanged/:path*",
