@@ -58,6 +58,7 @@ export const WithConfiguration = (props) => {
 
       moment.locale(languageCode);
       setLocale(yup[languageCode]);
+      // TODO: Setear locale de useTranstation.
     };
 
     const fetchVersion = () =>
