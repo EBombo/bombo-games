@@ -24,13 +24,19 @@ const Login = (props) => {
 
   const { sendError } = useSendError();
 
-  const { t, SwitchTranslation } = useTranslation("login");
+  const { t, SwitchTranslation, locale } = useTranslation("login");
 
   const [, setAuthUserLs] = useUser();
 
   const [authUser, setAuthUser] = useGlobal("user");
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const localePath = useMemo(() => {
+    if (locale === "es") return "";
+
+    return `/${locale}`;
+  }, [locale]);
 
   const fetchLobby = async (pin, avatar = avatars[0]) => {
     try {
@@ -122,7 +128,7 @@ const Login = (props) => {
 
         // AuthUser is admin.
         if (authUser.lobby?.game?.usersIds?.includes(authUser.id)) {
-          return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+          return router.push(`${localePath}/${gameName}/lobbies/${authUser.lobby.id}`);
         }
 
         // Replace "newUser" if user has already logged in before with the same email.
@@ -136,7 +142,7 @@ const Login = (props) => {
           await setAuthUser(user_);
           setAuthUserLs(user_);
 
-          return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+          return router.push(`${localePath}/${gameName}/lobbies/${authUser.lobby.id}`);
         }
 
         // Format new user.
@@ -174,7 +180,7 @@ const Login = (props) => {
         setAuthUserLs(newUser);
 
         // Redirect to lobby.
-        await router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+        await router.push(`${localePath}/${gameName}/lobbies/${authUser.lobby.id}`);
       } catch (error) {
         console.error(error);
         sendError(error, "initialize");
