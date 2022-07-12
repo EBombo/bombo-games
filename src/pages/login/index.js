@@ -128,7 +128,11 @@ const Login = (props) => {
 
         // AuthUser is admin.
         if (authUser.lobby?.game?.usersIds?.includes(authUser.id)) {
-          return router.push(`/${gameName}/lobbies/${authUser.lobby.id}?locale=${locale}`);
+          return router.push(
+            `${localePath}/${gameName}/lobbies/${authUser.lobby.id}?locale=${locale}`,
+            `${localePath}/${gameName}/lobbies/${authUser.lobby.id}?locale=${locale}`,
+            { shallow: true }
+          );
         }
 
         // Replace "newUser" if user has already logged in before with the same email.
@@ -142,7 +146,11 @@ const Login = (props) => {
           await setAuthUser(user_);
           setAuthUserLs(user_);
 
-          return router.push(`/${gameName}/lobbies/${authUser.lobby.id}?locale=${locale}`);
+          return router.push(
+            `${localePath}/${gameName}/lobbies/${authUser.lobby.id}?locale=${locale}`,
+            `${localePath}/${gameName}/lobbies/${authUser.lobby.id}?locale=${locale}`,
+            { shallow: true }
+          );
         }
 
         // Format new user.
@@ -180,7 +188,11 @@ const Login = (props) => {
         setAuthUserLs(newUser);
 
         // Redirect to lobby.
-        await router.push(`/${gameName}/lobbies/${authUser.lobby.id}?locale=${locale}`);
+        await router.push(
+          `${localePath}/${gameName}/lobbies/${authUser.lobby.id}?locale=${locale}`,
+          `${localePath}/${gameName}/lobbies/${authUser.lobby.id}?locale=${locale}`,
+          { shallow: true }
+        );
       } catch (error) {
         console.error(error);
         sendError(error, "initialize");
