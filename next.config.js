@@ -41,7 +41,7 @@ module.exports = withBundleAnalyzer({
       } /*
       {
         source: "/en/bingo/:path*",
-        destination: "https://bingo-red.ebombo.io/en/bingo/:path*",
+        destination: "https://bingo.ebombo.io/en/bingo/:path*",
       },*/,
       {
         source: "/hanged/:path*",
@@ -49,7 +49,7 @@ module.exports = withBundleAnalyzer({
       },
       {
         source: "/en/hanged/:path*",
-        destination: "https://hanged-red.ebombo.io/en/hanged/:path*",
+        destination: "https://hanged.ebombo.io/en/hanged/:path*",
       },
       {
         source: "/roulette/:path*",
@@ -57,7 +57,7 @@ module.exports = withBundleAnalyzer({
       },
       {
         source: "/en/roulette/:path*",
-        destination: "https://roulette-red.ebombo.io/en/roulette/:path*",
+        destination: "https://roulette.ebombo.io/en/roulette/:path*",
       },
       {
         source: "/roulettequestions/:path*",
@@ -65,7 +65,7 @@ module.exports = withBundleAnalyzer({
       },
       {
         source: "/en/roulettequestions/:path*",
-        destination: "https://roulette-red.ebombo.io/en/roulettequestions/:path*",
+        destination: "https://roulette.ebombo.io/en/roulettequestions/:path*",
       },
       {
         source: "/trivia/:path*",
@@ -73,7 +73,7 @@ module.exports = withBundleAnalyzer({
       },
       {
         source: "/en/trivia/:path*",
-        destination: "https://trivia-red.ebombo.io/en/trivia/:path*",
+        destination: "https://trivia.ebombo.io/en/trivia/:path*",
       },
     ];
   },
