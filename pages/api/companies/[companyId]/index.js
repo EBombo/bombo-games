@@ -15,7 +15,7 @@ const apiLobbyReserveSeat = async (req, res) => {
   await cors(req, res);
 
   switch (req.method) {
-    case "PUT":
+    case "GET":
       return await getSubscriptionPlan(req, res);
     case "DELETE":
       return res.status(500).send({ error: "Method is not defined" });
