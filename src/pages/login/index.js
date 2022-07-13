@@ -15,6 +15,7 @@ import { getBingoCard } from "../../constants/bingoCards";
 import { firebase } from "../../firebase/config";
 import { saveMembers } from "../../constants/saveMembers";
 import { useFetch } from "../../hooks/useFetch";
+import { spinLoader } from "../../components/common/loader";
 
 const Login = (props) => {
   const router = useRouter();
@@ -31,6 +32,7 @@ const Login = (props) => {
   const [authUser, setAuthUser] = useGlobal("user");
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingLobby, setIsLoadingLobby] = useState(false);
 
   const fetchLobby = async (pin, avatar = avatars[0]) => {
     try {
@@ -67,28 +69,14 @@ const Login = (props) => {
 
   // Redirect to lobby.
   useEffect(() => {
-    if (!authUser?.lobby) return setIsLoading(false);
-    if (authUser?.isAdmin) return setIsLoading(false);
-    if (!authUser?.nickname) return setIsLoading(false);
-    if (authUser?.lobby?.settings?.userIdentity && !authUser?.email) return setIsLoading(false);
-
-    const reserveLobbySeat = async (gameName, lobbyId, userId, newUser) => {
-      const fetchProps = {
-        url: `${config.serverUrl}/${gameName}/lobbies/${lobbyId}/seat`,
-        method: "PUT",
-      };
-
-      const { error } = await Fetch(fetchProps.url, fetchProps.method, {
-        userId,
-        newUser,
-      });
-
-      if (error) throw new Error(error?.message ?? "Something went wrong");
-    };
+    if (!authUser?.lobby) return setIsLoadingLobby(false);
+    if (authUser?.isAdmin) return setIsLoadingLobby(false);
+    if (!authUser?.nickname) return setIsLoadingLobby(false);
+    if (authUser?.lobby?.settings?.userIdentity && !authUser?.email) return setIsLoadingLobby(false);
 
     // Determine is necessary create a user.
     const initialize = async () => {
-      setIsLoading(true);
+      setIsLoadingLobby(true);
       try {
         // Get game name.
         const gameName = authUser.lobby.game.adminGame.name.toLowerCase();
@@ -117,7 +105,7 @@ const Login = (props) => {
             nickname: authUser.nickname,
           });
 
-          return setIsLoading(false);
+          return setIsLoadingLobby(false);
         }
 
         // AuthUser is admin.
@@ -198,7 +186,7 @@ const Login = (props) => {
           nickname: authUser.nickname,
         });
       }
-      setIsLoading(false);
+      setIsLoadingLobby(false);
     };
 
     initialize();
@@ -258,6 +246,8 @@ const Login = (props) => {
       <div className="absolute top-4 right-4 lg:top-10 lg:right-10">
         <SwitchTranslation />
       </div>
+
+      {isLoadingLobby ? spinLoader() : null}
 
       <div className="main-container">
         {!authUser?.lobby && (
