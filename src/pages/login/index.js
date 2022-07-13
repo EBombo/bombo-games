@@ -166,6 +166,11 @@ const Login = (props) => {
           countPlayers: firebase.firestore.FieldValue.increment(1),
         });
 
+        // Update metrics for lobby.
+        const promiseLobby = firestoreRef.doc(`lobbies/${lobby?.id}`).update({
+          countPlayers: firebase.firestore.FieldValue.increment(1),
+        });
+
         // Register user in lobby.
         const promiseUser = firestoreRef
           .collection("lobbies")
@@ -177,7 +182,7 @@ const Login = (props) => {
         // Register user as a member in company.
         const promiseMember = saveMembers(authUser.lobby, [newUser]);
 
-        await Promise.all([promiseMetric, promiseUser, promiseMember]);
+        await Promise.all([promiseMetric, promiseUser, promiseMember, promiseLobby]);
 
         await setAuthUser(newUser);
         setAuthUserLs(newUser);
