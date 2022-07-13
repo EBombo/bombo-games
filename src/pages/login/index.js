@@ -1,5 +1,5 @@
 import React, { useEffect, useGlobal, useMemo, useState } from "reactn";
-import { config, firestore, firestoreBingo, firestoreRoulette, firestoreTrivia } from "../../firebase";
+import { config, firebase, firestore, firestoreBingo, firestoreRoulette, firestoreTrivia } from "../../firebase";
 import { NicknameStep } from "./NicknameStep";
 import { snapshotToArray } from "../../utils";
 import { EmailStep } from "./EmailStep";
@@ -12,7 +12,6 @@ import { Anchor } from "../../components/form";
 import { Tooltip } from "antd";
 import { fetchUserByEmail } from "./fetchUserByEmail";
 import { getBingoCard } from "../../constants/bingoCards";
-import { firebase } from "../../firebase/config";
 import { saveMembers } from "../../constants/saveMembers";
 import { spinLoader } from "../../components/common/loader";
 
