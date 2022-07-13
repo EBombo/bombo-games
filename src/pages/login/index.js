@@ -67,7 +67,6 @@ const Login = (props) => {
   // Redirect to lobby.
   useEffect(() => {
     if (!authUser?.lobby) return setIsLoadingLobby(false);
-    if (authUser?.isAdmin) return setIsLoadingLobby(false);
     if (!authUser?.nickname) return setIsLoadingLobby(false);
     if (authUser?.lobby?.settings?.userIdentity && !authUser?.email) return setIsLoadingLobby(false);
 
@@ -106,6 +105,11 @@ const Login = (props) => {
           return setIsLoadingLobby(false);
         }
 
+        // AuthUser is admin.
+        if (authUser.lobby?.game?.usersIds?.includes(authUser.id)) {
+          return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+        }
+
         /** Game is full. **/
         if (lobby?.countPlayers >= lobby?.limitByPlan) {
           props.showNotification("La sala llego a su limite permitido por su PLAN.");
@@ -119,11 +123,6 @@ const Login = (props) => {
           });
 
           return setIsLoadingLobby(false);
-        }
-
-        // AuthUser is admin.
-        if (authUser.lobby?.game?.usersIds?.includes(authUser.id)) {
-          return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
         }
 
         // Replace "newUser" if user has already logged in before with the same email.
