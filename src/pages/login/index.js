@@ -130,14 +130,16 @@ const Login = (props) => {
 
         // If user has already logged then redirect.
         if (user_) {
-          /** No es necesario actualizar todo el user, solo el "hasExited".  **/
-          await reserveLobbySeat(authUser.lobby.game.adminGame.name, authUser.lobby.id, user_.id, { hasExited: false });
-
           await setAuthUser(user_);
           setAuthUserLs(user_);
 
           return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
         }
+
+        if (!firestoreRef) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
+
+        // Redirect to lobby.
+        if (!lobby.isPlaying) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
 
         // Format new user.
         const userId = authUser?.id ?? firestore.collection("users").doc().id;
@@ -156,19 +158,27 @@ const Login = (props) => {
           card: userCard,
           lobbyId: lobby.id,
           lobby,
+          hasExited: false,
         };
-
-        await reserveLobbySeat(authUser.lobby.game.adminGame.name, authUser.lobby.id, userId, newUser);
 
         // Update metrics.
         const promiseMetric = firestoreRef.doc(`games/${lobby?.game?.id}`).update({
           countPlayers: firebase.firestore.FieldValue.increment(1),
         });
 
+        // TODO: Validate limit.
+        // Register user in lobby.
+        const promiseUser = firestoreRef
+          .collection("lobbies")
+          .doc(lobby.id)
+          .collection("users")
+          .doc(authUser.id)
+          .set(newUser);
+
         // Register user as a member in company.
         const promiseMember = saveMembers(authUser.lobby, [newUser]);
 
-        await Promise.all([promiseMetric, promiseMember]);
+        await Promise.all([promiseMetric, promiseUser, promiseMember]);
 
         await setAuthUser(newUser);
         setAuthUserLs(newUser);
