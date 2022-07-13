@@ -107,7 +107,7 @@ const Login = (props) => {
         }
 
         /** Game is full. **/
-        if (lobby?.limitByPlan >= lobby?.countPlayers) {
+        if (lobby?.countPlayers >= lobby?.limitByPlan) {
           props.showNotification("La sala llego a su limite permitido por su PLAN.");
 
           await setAuthUser({
