@@ -97,7 +97,7 @@ const fetchCustomerId = async (lobby) => {
     .get();
 
   /** If customer is empty, then return FREE_PLAN. */
-  if (customersQuerySnapshot.empty) return FREE_PLAN;
+  if (customersQuerySnapshot.empty) return;
 
   return customersQuerySnapshot.docs[0].id;
 };
