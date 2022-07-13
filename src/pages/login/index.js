@@ -14,14 +14,11 @@ import { fetchUserByEmail } from "./fetchUserByEmail";
 import { getBingoCard } from "../../constants/bingoCards";
 import { firebase } from "../../firebase/config";
 import { saveMembers } from "../../constants/saveMembers";
-import { useFetch } from "../../hooks/useFetch";
 import { spinLoader } from "../../components/common/loader";
 
 const Login = (props) => {
   const router = useRouter();
   const { pin } = router.query;
-
-  const { Fetch } = useFetch();
 
   const { sendError } = useSendError();
 
@@ -94,8 +91,24 @@ const Login = (props) => {
         const lobbyRef = await firestoreRef.doc(`lobbies/${authUser.lobby.id}`).get();
         const lobby = lobbyRef.data();
 
+        /** Game is Closed. **/
         if (lobby?.isClosed) {
           props.showNotification("UPS", "El juego esta cerrado");
+
+          await setAuthUser({
+            id: firestore.collection("users").doc().id,
+            lobby: null,
+            isAdmin: false,
+            email: authUser.email,
+            nickname: authUser.nickname,
+          });
+
+          return setIsLoadingLobby(false);
+        }
+
+        /** Game is full. **/
+        if (lobby?.limitByPlan >= lobby?.countPlayers) {
+          props.showNotification("La sala llego a su limite permitido por su PLAN.");
 
           await setAuthUser({
             id: firestore.collection("users").doc().id,
