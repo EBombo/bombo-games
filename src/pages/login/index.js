@@ -166,7 +166,6 @@ const Login = (props) => {
           countPlayers: firebase.firestore.FieldValue.increment(1),
         });
 
-        // TODO: Validate limit.
         // Register user in lobby.
         const promiseUser = firestoreRef
           .collection("lobbies")
