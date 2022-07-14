@@ -30,12 +30,6 @@ const Login = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingLobby, setIsLoadingLobby] = useState(false);
 
-  const localePath = useMemo(() => {
-    if (locale === "es") return "";
-
-    return `/${locale}`;
-  }, [locale]);
-
   const fetchLobby = async (pin, avatar = avatars[0]) => {
     try {
       // Fetch lobby.
