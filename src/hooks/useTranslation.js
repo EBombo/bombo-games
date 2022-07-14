@@ -19,7 +19,7 @@ export const useTranslation = (path) => {
   const router = useRouter();
   const { locale, asPath } = router;
 
-  const [,setLanguageCode] = useLanguageCode();
+  const [, setLanguageCode] = useLanguageCode();
 
   // Current languages.
   const locales = Object.keys(TRANSLATIONS);
