@@ -5,19 +5,13 @@ import { useCallback } from "reactn";
 
 import en from "../../public/locales/en.json";
 import es from "../../public/locales/es.json";
+import { cookieUtils } from "../utils";
 
 // TODO: Consider chunk the json files.
 const TRANSLATIONS = {
   en: { ...en },
   es: { ...es },
 };
-
-function setCookie(cname, cvalue, exdays) {
-  const d = new Date();
-  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-  let expires = "expires="+d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
 
 // TODO: Support capitalize.
 export const useTranslation = (path) => {
@@ -30,7 +24,7 @@ export const useTranslation = (path) => {
   // Update language and redirect.
   const setLocale = useCallback(
     (locale) => {
-      setCookie("NEXT_LOCALE", locale);
+      cookieUtils.setCookie("NEXT_LOCALE", locale);
       router.push(asPath, asPath, { locale });
     },
     [asPath, router, locale]
