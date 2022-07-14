@@ -69,11 +69,11 @@ module.exports = withBundleAnalyzer({
       },
       {
         source: "/trivia/:path*",
-        destination: "https://pr-61---trivia-321015-red-phlo3wge7q-uc.a.run.app/trivia/:path*",
+        destination: "https://trivia-red.ebombo.io/trivia/:path*",
       },
       {
         source: "/en/trivia/:path*",
-        destination: "https://pr-61---trivia-321015-red-phlo3wge7q-uc.a.run.app/en/trivia/:path*",
+        destination: "https://trivia-red.ebombo.io/en/trivia/:path*",
       },
     ];
   },
