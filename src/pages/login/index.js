@@ -112,7 +112,7 @@ const Login = (props) => {
 
         // AuthUser is admin.
         if (authUser.lobby?.game?.usersIds?.includes(authUser.id)) {
-          return router.push(`/${gameName}/lobbies/${authUser.lobby.id}?locale=${locale}`);
+          return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
         }
 
         /** Game is full. **/
@@ -138,7 +138,7 @@ const Login = (props) => {
           await setAuthUser(user_);
           setAuthUserLs(user_);
 
-          return router.push(`/${gameName}/lobbies/${authUser.lobby.id}?locale=${locale}`);
+          return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
         }
 
         if (!firestoreRef) return router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
@@ -193,7 +193,7 @@ const Login = (props) => {
         setAuthUserLs(newUser);
 
         // Redirect to lobby.
-        await router.push(`/${gameName}/lobbies/${authUser.lobby.id}?locale=${locale}`);
+        await router.push(`/${gameName}/lobbies/${authUser.lobby.id}`);
       } catch (error) {
         console.error(error);
         sendError(error, "initialize");
