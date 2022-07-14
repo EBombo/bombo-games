@@ -5,6 +5,8 @@ import { useCallback } from "reactn";
 
 import en from "../../public/locales/en.json";
 import es from "../../public/locales/es.json";
+import { cookieUtils } from "../utils";
+import { useLanguageCode } from "./useLocalStorageState";
 
 // TODO: Consider chunk the json files.
 const TRANSLATIONS = {
@@ -17,12 +19,16 @@ export const useTranslation = (path) => {
   const router = useRouter();
   const { locale, asPath } = router;
 
+  const [, setLanguageCode] = useLanguageCode();
+
   // Current languages.
   const locales = Object.keys(TRANSLATIONS);
 
   // Update language and redirect.
   const setLocale = useCallback(
     (locale) => {
+      setLanguageCode(locale);
+      cookieUtils.setCookie("NEXT_LOCALE", locale, 365);
       router.push(asPath, asPath, { locale });
     },
     [asPath, router, locale]

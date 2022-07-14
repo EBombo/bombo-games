@@ -36,44 +36,29 @@ module.exports = withBundleAnalyzer({
   async rewrites() {
     return [
       {
-        source: "/bingo/:path*",
-        destination: "https://bingo-red.ebombo.io/bingo/:path*",
+        source: "/:locale/bingo/:path*",
+        destination: "https://bingo-red.ebombo.io/:locale/bingo/:path*",
+        locale: false,
       },
       {
-        source: "/en/bingo/:path*",
-        destination: "https://bingo-red.ebombo.io/en/bingo/:path*",
+        source: "/:locale/hanged/:path*",
+        destination: "https://hanged-red.ebombo.io/:locale/hanged/:path*",
+        locale: false,
       },
       {
-        source: "/hanged/:path*",
-        destination: "https://hanged-red.ebombo.io/hanged/:path*",
+        source: "/:locale/roulette/:path*",
+        destination: "https://roulette-red.ebombo.io/:locale/roulette/:path*",
+        locale: false,
       },
       {
-        source: "/en/hanged/:path*",
-        destination: "https://hanged-red.ebombo.io/en/hanged/:path*",
+        source: "/:locale/roulettequestions/:path*",
+        destination: "https://roulette-red.ebombo.io/:locale/roulettequestions/:path*",
+        locale: false,
       },
       {
-        source: "/roulette/:path*",
-        destination: "https://roulette-red.ebombo.io/roulette/:path*",
-      },
-      {
-        source: "/en/roulette/:path*",
-        destination: "https://roulette-red.ebombo.io/en/roulette/:path*",
-      },
-      {
-        source: "/roulettequestions/:path*",
-        destination: "https://roulette-red.ebombo.io/roulettequestions/:path*",
-      },
-      {
-        source: "/en/roulettequestions/:path*",
-        destination: "https://roulette-red.ebombo.io/en/roulettequestions/:path*",
-      },
-      {
-        source: "/trivia/:path*",
-        destination: "https://trivia-red.ebombo.io/trivia/:path*",
-      },
-      {
-        source: "/en/trivia/:path*",
-        destination: "https://trivia-red.ebombo.io/en/trivia/:path*",
+        source: "/:locale/trivia/:path*",
+        destination: "https://trivia-red.ebombo.io/:locale/trivia/:path*",
+        locale: false,
       },
     ];
   },
