@@ -24,7 +24,7 @@ export const useTranslation = (path) => {
   // Update language and redirect.
   const setLocale = useCallback(
     (locale) => {
-      cookieUtils.setCookie("NEXT_LOCALE", locale);
+      cookieUtils.setCookie("NEXT_LOCALE", locale, 365);
       router.push(asPath, asPath, { locale });
     },
     [asPath, router, locale]
